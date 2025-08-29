@@ -13,7 +13,8 @@ local ExecutorSupport = {
 
 }
 
-local Character = game.Players.LocalPlayer.Character
+local Player = game.Players.LocalPlayer
+local Character = Player.Character
 local y,n = pcall(function()
 	require(Player:FindFirstChild("PlayerModule", true))
 end)
