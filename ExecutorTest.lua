@@ -186,7 +186,7 @@ end
 
 if firetouchinterest then
 	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 1)
-	task.wait()
+	task.wait(0.01)
 	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 0)
 end
 
