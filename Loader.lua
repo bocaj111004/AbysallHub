@@ -1,6 +1,10 @@
+if AbysallHubLoaded then
+	return
+end
+
 local AbysallHubSettings = {
 	Name = "AbysallHub",
-	DiscordInvite = "soon",
+	DiscordInvite = "https://discord.gg/DXJNkSwje3",
 	Repository = "https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/"
 }
 
