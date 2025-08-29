@@ -23,6 +23,33 @@ if y == true then
 	ExecutorSupport["require"] = true
 end
 
+local NewPart = Instance.new("Part")
+NewPart.Transparency = 1
+NewPart.Size = Vector3.new(100,100,100)
+NewPart.Position = Vector3.new(0,2500,0)
+NewPart.Anchored = false
+NewPart.Parent = workspace
+local NewPrompt = Instance.new("ProximityPrompt")
+NewPrompt.Parent = NewPart
+NewPrompt.Enabled = false
+NewPrompt.MaxActivationDistance = 999999
+NewPrompt.RequiresLineOfSight = false
+
+if firetouchinterest then
+	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 1)
+	task.wait(0.05)
+	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 0)
+end
+
+NewPrompt.Triggered:Connect(function()
+	ExecutorSupport["fireproximityprompt"] = true
+
+end)
+
+NewPart.Touched:Connect(function()
+	ExecutorSupport["firetouchinterest"] = true
+end)
+
 function CheckHookMetaMethod()
 	if hookmetamethod then
 		local object = setmetatable({}, { __index = newcclosure(function() return false end), __metatable = "Locked!" })
@@ -146,26 +173,7 @@ end
 
 
 
-local NewPart = Instance.new("Part")
-NewPart.Transparency = 1
-NewPart.Size = Vector3.new(100,100,100)
-NewPart.Position = Vector3.new(0,2500,0)
-NewPart.Anchored = false
-NewPart.Parent = workspace
-local NewPrompt = Instance.new("ProximityPrompt")
-NewPrompt.Parent = NewPart
-NewPrompt.Enabled = false
-NewPrompt.MaxActivationDistance = 999999
-NewPrompt.RequiresLineOfSight = false
 
-NewPrompt.Triggered:Connect(function()
-	ExecutorSupport["fireproximityprompt"] = true
-
-end)
-
-NewPart.Touched:Connect(function()
-	ExecutorSupport["firetouchinterest"] = true
-end)
 
 
 
@@ -184,10 +192,6 @@ end
 
 
 
-if firetouchinterest then
-	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 1)
-	task.wait(0.01)
-	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 0)
-end
+
 
 getgenv().ExecutorSupport = ExecutorSupport
