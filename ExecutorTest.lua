@@ -29,26 +29,29 @@ NewPart.Size = Vector3.new(100,100,100)
 NewPart.Position = Vector3.new(0,2500,0)
 NewPart.Anchored = false
 NewPart.Parent = workspace
+local NewPart2 = Instance.new("Part")
+NewPart2.Transparency = 1
+NewPart2.Size = Vector3.new(100,100,100)
+NewPart2.Position = Vector3.new(0,2500,0)
+NewPart2.Anchored = false
+NewPart2.Parent = workspace
 local NewPrompt = Instance.new("ProximityPrompt")
 NewPrompt.Parent = NewPart
 NewPrompt.Enabled = false
 NewPrompt.MaxActivationDistance = 999999
 NewPrompt.RequiresLineOfSight = false
 
-if firetouchinterest then
-	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 1)
-	task.wait(0.05)
-	firetouchinterest(NewPart, Character:FindFirstChild("HumanoidRootPart"), 0)
-end
+NewPart.Touched:Connect(function()
+	ExecutorSupport["firetouchinterest"] = true
+end)
+
 
 NewPrompt.Triggered:Connect(function()
 	ExecutorSupport["fireproximityprompt"] = true
 
 end)
 
-NewPart.Touched:Connect(function()
-	ExecutorSupport["firetouchinterest"] = true
-end)
+
 
 function CheckHookMetaMethod()
 	if hookmetamethod then
@@ -189,9 +192,19 @@ end
 
 
 
+if firetouchinterest then
+	firetouchinterest(NewPart, NewPart2, 1)
+	task.wait()
+	firetouchinterest(NewPart, NewPart2, 0)
+end
 
 
 
 
 
 getgenv().ExecutorSupport = ExecutorSupport
+
+NewPart:Destroy()
+NewPart2:Destroy()
+task.wait(1)
+print(getgenv().ExecutorSupport.firetouchinterest)
