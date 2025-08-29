@@ -1357,7 +1357,7 @@ MenuSettings:AddDropdown("DPIDropdown", {
 		Library:SetDPIScale(DPI)
 	end,
 })
-MenuSettings:AddBUtton({
+MenuSettings:AddButton({
 	Text = "Copy Discord Invite",
 	Tooltip = 'Copies the discord server link to your clipboard.',
 	DoubleClick = false,
