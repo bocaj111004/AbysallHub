@@ -17,4 +17,4 @@ local CurrentPlace = Places[game.GameId] or "Universal"
 getgenv().AbysallHubSettings = AbysallHubSettings
 getgenv().AbysallHubLoaded = true
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/Places/" .. CurrentPlace .. ".lua"))
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/Places/" .. CurrentPlace .. ".lua"))()
