@@ -3,6 +3,8 @@ if getgenv().AbysallHubLoaded == true then
 	return
 end
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/ExecutorTest.lua"))()
+
 local AbysallHubSettings = {
 	Name = "Abysall Hub",
 	DiscordInvite = "https://discord.gg/DXJNkSwje3",
@@ -17,6 +19,7 @@ local CurrentPlace = Places[game.GameId] or "Universal"
 getgenv().AbysallHubSettings = AbysallHubSettings
 getgenv().AbysallHubLoaded = true
 
+task.wait(0.1)
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/ExecutorTest.lua"))()
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/Places/" .. CurrentPlace .. ".lua"))()
