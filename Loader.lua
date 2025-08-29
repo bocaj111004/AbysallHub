@@ -4,7 +4,7 @@ if getgenv().AbysallHubLoaded == true then
 end
 
 local AbysallHubSettings = {
-	Name = "AbysallHub",
+	Name = "Abysall Hub",
 	DiscordInvite = "https://discord.gg/DXJNkSwje3",
 }
 
