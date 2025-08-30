@@ -9,7 +9,8 @@ local ExecutorSupport = {
 	["getnamecallmethod"] = false,
 	["hookfunction"] = false,
 	["getrawmetatable"] = false,
-	["setreadonly"] = false
+	["setreadonly"] = false,
+	["toclipboard"] = false
 
 }
 
@@ -22,6 +23,13 @@ end)
 if y == true then
 	ExecutorSupport["require"] = true
 end
+
+
+
+if toclipboard then
+	ExecutorSupport["toclipboard"] = true
+end
+
 
 local NewPart = Instance.new("Part")
 NewPart.Transparency = 1
