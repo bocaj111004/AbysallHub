@@ -67,9 +67,7 @@ function CheckHookMetaMethod()
 		local ref = hookmetamethod(object, "__index", function() return true end)
 		if object.test == false then ExecutorSupport["hookmetamethod"] = false return end
 		if ref() == true then ExecutorSupport["hookmetamethod"] = false return end
-
 	end
-
 end
 
 function CheckNewCClosure()
@@ -138,9 +136,6 @@ CheckGetRawMetaTable()
 CheckSetReadOnly()
 
 if isnetworkowner then
-	if isnetworkowner(workspace:FindFirstChild("Root", true)) then
-		ExecutorSupport["isnetworkowner"] = false
-	end
 	if isnetworkowner(Character:FindFirstChild("HumanoidRootPart")) == false then
 		ExecutorSupport["isnetworkowner"] = false
 	end
