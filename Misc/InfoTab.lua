@@ -1,4 +1,6 @@
-return function(Tab)
+local InfoTab = {}
+
+function InfoTab:AddInfoTab(Tab)
 local SupportedGames = Tab:AddLeftGroupbox("Supported Games")
 SupportedGames:AddLabel("[Doors]: Working", true)
   SupportedGames:AddLabel("[Slap Battles]: In Development", true)
@@ -30,5 +32,7 @@ local Credits = Tab:AddRightGroupbox("Contributors")
   Credits:AddDivider()
   Credits:AddLabel("[thehuntersolo1]: Helped to script a few things, found exploits for Doors")
   Credits:AddLabel("[feargeorge]: Helped to script a few things, gave me some ideas for features")
-   Credits:AddLabel("[mstudio45]: Made the ESP system we used to use, before we made our own (https://github.com/mstudio45/MSESP)")
+  Credits:AddLabel("[mstudio45]: Made the ESP system we previously used (https://github.com/mstudio45/MSESP), before we made our own")
 end
+
+return InfoTab
