@@ -117,14 +117,12 @@ function CheckGetRawMetaTable()
 end
 
 function CheckSetReadOnly()
-	if setreadonly then
+	if setreadonly and isreadonly then
 		local object = { success = false }
 		table.freeze(object)
 		setreadonly(object, false)
-		local y,n = pcall(function()
-			object.success = true
-		end)
-		if y then
+		
+		if not isreadonly(object) then
 			ExecutorSupport["setreadonly"] = true
 		end
 	end
