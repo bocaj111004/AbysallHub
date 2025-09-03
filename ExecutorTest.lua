@@ -16,14 +16,17 @@ local ExecutorSupport = {
 
 local Player = game.Players.LocalPlayer
 local Character = Player.Character
-local y,n = pcall(function()
-	require(Player:FindFirstChild("PlayerModule", true))
-end)
 
-if y == true then
-	ExecutorSupport["require"] = true
-end
 
+if getgc  then
+			local gctable = getgc(true)
+
+			for i,v in pairs(getgc(true)) do
+				if type(v) == 'table' then
+					ExecutorSupport["require"] = true
+				end
+			end
+		end
 
 
 if toclipboard then
