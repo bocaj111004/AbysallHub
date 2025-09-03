@@ -121,8 +121,10 @@ function CheckSetReadOnly()
 		local object = { success = false }
 		table.freeze(object)
 		setreadonly(object, false)
-		object.success = true
-		if object.success then
+		local y,n = pcall(function()
+			object.success = true
+		end)
+		if y then
 			ExecutorSupport["setreadonly"] = true
 		end
 	end
