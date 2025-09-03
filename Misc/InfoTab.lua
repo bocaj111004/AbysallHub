@@ -3,7 +3,6 @@ local InfoTab = {}
 function InfoTab:AddInfoTab(Tab)
 local SupportedGames = Tab:AddLeftGroupbox("Supported Games")
 SupportedGames:AddLabel("[Doors]: Working", true)
-  SupportedGames:AddLabel("[Slap Battles]: In Development", true)
 SupportedGames:AddDivider()
 SupportedGames:AddLabel("[Universal]: Working", true)
 
