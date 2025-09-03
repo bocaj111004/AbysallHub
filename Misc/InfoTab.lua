@@ -32,7 +32,9 @@ local Credits = Tab:AddRightGroupbox("Contributors")
   Credits:AddDivider()
   Credits:AddLabel("[thehuntersolo1]: Helped to script a few things, found exploits for Doors", true)
   Credits:AddLabel("[feargeorge]: Helped to script a few things, gave me some ideas for features", true)
-  Credits:AddLabel("[mstudio45]: Made the ESP system we previously used (https://github.com/mstudio45/MSESP), before we made our own", true)
+	Credits:AddDivider()
+	 Credits:AddLabel("[deividcomsono]: UI Developer", true)
+	Credits:AddLabel("[mstudio45]: UI Developer", true)
 end
 
 return InfoTab
