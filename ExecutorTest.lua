@@ -2,7 +2,7 @@ local ExecutorSupport = {
 	["fireproximityprompt"] = false,
 	["require"] = false,
 	["hookmetamethod"] = true,
-	["isnetworkowner"] = false,
+	["isnetworkowner"] = true,
 	["newcclosure"] = false,
 	["firetouchinterest"] = false,
 	["replicatesignal"] = false,
@@ -147,6 +147,13 @@ if isnetworkowner then
 		ExecutorSupport["isnetworkowner"] = true
 	end
 
+    local part = Instance.new("Part")
+part.Anchored = false
+part.Parent = workspace
+
+if isnetworkowner(part) == false then
+ExecutorSupport["isnetworkowner"] = false
+end
 end
 
 local ClickDetector = Instance.new("ClickDetector")
@@ -215,4 +222,6 @@ getgenv().ExecutorSupport = ExecutorSupport
 NewPart:Destroy()
 NewPart2:Destroy()
 task.wait(1)
-print(getgenv().ExecutorSupport.firetouchinterest)
+for name, result in pairs(ExecutorSupport) do
+print(name .. ": " .. tostring(result))
+end
