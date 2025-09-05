@@ -199,9 +199,11 @@ end
 
 
 if firetouchinterest then
+	pcall(function()
 	firetouchinterest(NewPart, NewPart2, 1)
 	task.wait()
 	firetouchinterest(NewPart, NewPart2, 0)
+		end)
 end
 
 
