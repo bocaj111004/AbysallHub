@@ -24,6 +24,7 @@ if getgc  then
 			for i,v in pairs(getgc(true)) do
 				if type(v) == 'table' then
 					ExecutorSupport["require"] = true
+			break
 				end
 			end
 		end
