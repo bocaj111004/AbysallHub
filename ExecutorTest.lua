@@ -214,14 +214,11 @@ if firetouchinterest then
 end
 
 
-
+task.wait(0.1)
 
 
 getgenv().ExecutorSupport = ExecutorSupport
 
 NewPart:Destroy()
 NewPart2:Destroy()
-task.wait(1)
-for name, result in pairs(ExecutorSupport) do
-print(name .. ": " .. tostring(result))
-end
+
