@@ -53,6 +53,12 @@ NewPrompt.Enabled = false
 NewPrompt.MaxActivationDistance = 999999
 NewPrompt.RequiresLineOfSight = false
 
+local ClickDetector = Instance.new("ClickDetector")
+CLickDetector.Parent = NewPart
+ClickDetector.MouseClick:Connect(function()
+	ExecutorSupport["fireclickdetector"] = true
+end)
+
 NewPart.Touched:Connect(function()
 	ExecutorSupport["firetouchinterest"] = true
 end)
@@ -148,9 +154,7 @@ if isnetworkowner then
 		ExecutorSupport["isnetworkowner"] = true
 	end
 
-    local part = Instance.new("Part")
-part.Anchored = false
-part.Parent = workspace
+    
 
 if isnetworkowner(part) == false then
 ExecutorSupport["isnetworkowner"] = false
@@ -198,6 +202,10 @@ end
 
 if fireproximityprompt then
 	fireproximityprompt(NewPrompt)
+end
+
+if fireclickdetector then
+	fireclickdetector(ClickDetector)
 end
 
 
