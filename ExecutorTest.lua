@@ -156,7 +156,7 @@ if isnetworkowner then
 
     
 
-if isnetworkowner(part) == false then
+if isnetworkowner(NewPart) == false then
 ExecutorSupport["isnetworkowner"] = false
 end
 end
