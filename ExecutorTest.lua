@@ -54,7 +54,7 @@ NewPrompt.MaxActivationDistance = 999999
 NewPrompt.RequiresLineOfSight = false
 
 local ClickDetector = Instance.new("ClickDetector")
-CLickDetector.Parent = NewPart
+ClickDetector.Parent = NewPart
 ClickDetector.MouseClick:Connect(function()
 	ExecutorSupport["fireclickdetector"] = true
 end)
