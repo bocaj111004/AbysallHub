@@ -77,6 +77,7 @@ function CheckHookMetaMethod()
 		local ref = hookmetamethod(object, "__index", function() return true end)
 		if object.test == false then ExecutorSupport["hookmetamethod"] = false return end
 		if ref() == true then ExecutorSupport["hookmetamethod"] = false return end
+		hookmetamethod(object, "__index", ref)
 	end
 end
 
