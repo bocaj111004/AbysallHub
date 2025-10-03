@@ -31,6 +31,8 @@ if toclipboard then
 end
 
 
+
+local Player = game.Players.LocalPlayer
 local NewPart = Instance.new("Part")
 NewPart.Transparency = 1
 NewPart.Size = Vector3.new(100,100,100)
@@ -83,6 +85,7 @@ function CheckHookMetaMethod()
 			ref = hookmetamethod(object, "__index", function() return true end)
 		if object.test == false then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
 		if ref() == true then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
+		hookmetamethod(object, "__index", ref)
 	end
 end
 
@@ -223,8 +226,9 @@ end
 
 if firetouchinterest then
 	pcall(function()
+	task.wait(0.05)
 	firetouchinterest(NewPart, NewPart2, 1)
-	task.wait()
+	task.wait(0.05)
 	firetouchinterest(NewPart, NewPart2, 0)
 		end)
 end
@@ -237,4 +241,3 @@ getgenv().ExecutorSupport = ExecutorSupport
 
 NewPart:Destroy()
 NewPart2:Destroy()
-
