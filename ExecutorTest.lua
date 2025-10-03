@@ -11,12 +11,8 @@ local ExecutorSupport = {
 	["getrawmetatable"] = false,
 	["setreadonly"] = false,
 	["toclipboard"] = false
-
+    ["Drawing"] = false
 }
-
-local Player = game.Players.LocalPlayer
-local Character = Player.Character
-
 
 if getgc  then
 			local gctable = getgc(true)
@@ -66,17 +62,27 @@ end)
 
 NewPrompt.Triggered:Connect(function()
 	ExecutorSupport["fireproximityprompt"] = true
-
 end)
 
+function CheckDrawing()
+	if Drawing and Drawing.new then
+	local Success, Error = pcall(function()
+				local t = Drawing.new("Triangle")
+			end)
 
+		if Success then
+			ExecutorSupport["Drawing"] = true
+		end
+	end
+end
 
 function CheckHookMetaMethod()
 	if hookmetamethod then
 		local object = setmetatable({}, { __index = newcclosure(function() return false end), __metatable = "Locked!" })
-		local ref = hookmetamethod(object, "__index", function() return true end)
-		if object.test == false then ExecutorSupport["hookmetamethod"] = false return end
-		if ref() == true then ExecutorSupport["hookmetamethod"] = false return end
+		local ref
+			ref = hookmetamethod(object, "__index", function() return true end)
+		if object.test == false then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
+		if ref() == true then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
 	end
 end
 
@@ -144,13 +150,14 @@ CheckNewCClosure()
 CheckGetNameCallMethod()
 CheckGetRawMetaTable()
 CheckSetReadOnly()
+CheckDrawing()
 
 if isnetworkowner then
-	if isnetworkowner(Character:FindFirstChild("HumanoidRootPart")) == false then
+	if isnetworkowner(Instance.new("Part")) == true then
 		ExecutorSupport["isnetworkowner"] = false
 	end
 
-	if isnetworkowner(Character:FindFirstChild("HumanoidRootPart")) == true then
+	if isnetworkowner(Instance.new("Part", workspace)) == true then
 		ExecutorSupport["isnetworkowner"] = true
 	end
 
