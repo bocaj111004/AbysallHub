@@ -10,7 +10,7 @@ local ExecutorSupport = {
 	["hookfunction"] = false,
 	["getrawmetatable"] = false,
 	["setreadonly"] = false,
-	["toclipboard"] = false
+	["toclipboard"] = false,
     ["Drawing"] = false
 }
 
