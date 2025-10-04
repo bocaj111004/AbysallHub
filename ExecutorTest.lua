@@ -1,17 +1,42 @@
+local ConsoleMessage = [[
+
+  /$$$$$$  /$$$$$$$  /$$     /$$ /$$$$$$   /$$$$$$  /$$       /$$      
+ /$$__  $$| $$__  $$|  $$   /$$//$$__  $$ /$$__  $$| $$      | $$      
+| $$  \ $$| $$  \ $$ \  $$ /$$/| $$  \__/| $$  \ $$| $$      | $$      
+| $$$$$$$$| $$$$$$$   \  $$$$/ |  $$$$$$ | $$$$$$$$| $$      | $$      
+| $$__  $$| $$__  $$   \  $$/   \____  $$| $$__  $$| $$      | $$      
+| $$  | $$| $$  \ $$    | $$    /$$  \ $$| $$  | $$| $$      | $$      
+| $$  | $$| $$$$$$$/    | $$   |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$
+|__/  |__/|_______/     |__/    \______/ |__/  |__/|________/|________/
+                                                                       
+Starting Executor Test...   
+
+]]
+
+
 local ExecutorSupport = {
+	["writefile"] = false,
+	["isfile"] = true,
+	["readfile"] = false,
+	["listfiles"] = false,
+	["delfile"] = false,
+	["makefolder"] = false,
+	["delfolder"] = false,
 	["fireproximityprompt"] = false,
 	["require"] = false,
-	["hookmetamethod"] = true,
-	["isnetworkowner"] = true,
+	["hookmetamethod"] = false,
+	["isnetworkowner"] = false,
 	["newcclosure"] = false,
 	["firetouchinterest"] = false,
 	["replicatesignal"] = false,
 	["getnamecallmethod"] = false,
 	["hookfunction"] = false,
-	["getrawmetatable"] = false,
+	["getrawmetatable"] = true,
 	["setreadonly"] = false,
 	["toclipboard"] = false,
-    ["Drawing"] = false
+	["Drawing"] = false,
+	["queue_on_teleport"] = false,
+	["firesignal"] = true,
 }
 
 if getgc  then
@@ -50,6 +75,8 @@ NewPrompt.Parent = NewPart
 NewPrompt.Enabled = false
 NewPrompt.MaxActivationDistance = 999999
 NewPrompt.RequiresLineOfSight = false
+local TestEvent = Instance.new("RemoteEvent", workspace)
+
 
 local ClickDetector = Instance.new("ClickDetector")
 ClickDetector.Parent = NewPart
@@ -65,6 +92,11 @@ end)
 NewPrompt.Triggered:Connect(function()
 	ExecutorSupport["fireproximityprompt"] = true
 end)
+
+TestEvent.OnClientEvent:Connect(function()
+		ExecutorSupport["firesignal"] = true
+	end)
+
 
 function CheckDrawing()
 	if Drawing and Drawing.new then
@@ -82,7 +114,10 @@ function CheckHookMetaMethod()
 	if hookmetamethod then
 		local object = setmetatable({}, { __index = newcclosure(function() return false end), __metatable = "Locked!" })
 		local ref
-			ref = hookmetamethod(object, "__index", function() return true end)
+				local Success, Error = pcall(function()
+		ref = hookmetamethod(object, "__index", function() return true end)
+			end)
+		if not Success then ExecutorSupport["hookmetamethod"] = false return end
 		if object.test == false then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
 		if ref() == true then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
 		hookmetamethod(object, "__index", ref)
@@ -112,7 +147,9 @@ function CheckGetNameCallMethod()
 	local ref
 	ref = hookmetamethod(game, "__namecall", function(...)
 		if not method then
-			method = getnamecallmethod()
+			
+				method = getnamecallmethod()
+					
 		end
 		return ref(...)
 	end)
@@ -125,9 +162,11 @@ end
 
 function CheckGetRawMetaTable()
 	if getrawmetatable then
+			local Success, Error = pcall(function()
 		local metatable = { __metatable = "Locked!" }
 		local object = setmetatable({}, metatable)
-		if getrawmetatable(object) == metatable then
+			end)
+		if Success and getrawmetatable(object) == metatable then
 			ExecutorSupport["getrawmetatable"] = true
 		end
 
@@ -136,15 +175,36 @@ function CheckGetRawMetaTable()
 end
 
 function CheckSetReadOnly()
-	if setreadonly and isreadonly then
+	if setreadonly then
 		local object = { success = false }
 		table.freeze(object)
 		setreadonly(object, false)
 		
-		if not isreadonly(object) then
+		local Success, Error = pcall(function()
+			object.success = true
+			end)
+		if Success then
 			ExecutorSupport["setreadonly"] = true
 		end
+		
 	end
+end
+
+function CheckQueueTeleport()
+	
+		local TestCode = [[
+			warn("test")
+			]]
+			if queue_on_teleport then
+				local Success, Error = pcall(function()
+		queue_on_teleport(TestCode)
+			end)
+		if Success then
+ExecutorSupport["queue_on_teleport"] = true
+		end
+
+	end
+
 end
 
 
@@ -154,17 +214,18 @@ CheckGetNameCallMethod()
 CheckGetRawMetaTable()
 CheckSetReadOnly()
 CheckDrawing()
+CheckQueueTeleport()
 
 if isnetworkowner then
-	if isnetworkowner(Instance.new("Part")) == true then
-		ExecutorSupport["isnetworkowner"] = false
-	end
-
+	
 	if isnetworkowner(Instance.new("Part", workspace)) == true then
 		ExecutorSupport["isnetworkowner"] = true
 	end
 
-    
+    if isnetworkowner(Instance.new("Part")) == true then
+		ExecutorSupport["isnetworkowner"] = false
+	end
+
 
 if isnetworkowner(NewPart) == false then
 ExecutorSupport["isnetworkowner"] = false
@@ -192,8 +253,11 @@ local function TestHook()
 end
 
 if hookfunction then
+	local Success, Error = pcall(function()
 	hookfunction(TestFunction, TestHook)
-	if TestFunction() == "hooked" then
+		end)
+		
+	if Success and TestFunction() == "hooked" then
 		ExecutorSupport["hookfunction"] = true
 	end
 
@@ -211,27 +275,129 @@ end
 
 
 if fireproximityprompt then
+	local Success, Error = pcall(function()
 	fireproximityprompt(NewPrompt)
+		end)
 end
 
 if fireclickdetector then
+		local Success, Error = pcall(function()
 	fireclickdetector(ClickDetector)
+		end)
 end
 
-
+if firesignal then
+	local Success, Error = pcall(function()
+	firesignal(TestEvent.OnClientEvent)
+		end)
+end
 
 
 
 
 
 if firetouchinterest then
-	pcall(function()
+		local Success, Error = pcall(function()
 	task.wait(0.05)
 	firetouchinterest(NewPart, NewPart2, 1)
 	task.wait(0.05)
 	firetouchinterest(NewPart, NewPart2, 0)
 		end)
 end
+
+if writefile then
+	local Success, Error = pcall(function()
+			writefile("ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
+		end)
+if Success then
+		ExecutorSupport["writefile"] = true
+end
+
+	if isfile then
+			local Success, Error = pcall(function()
+			isfile("ABYSALL_TEST_FILE")
+			end)
+		if Success and isfile("ABYSALL_TEST_FILE") then
+			ExecutorSupport["isfile"] = true
+		end
+	end
+end
+
+if readfile then
+local Success, Error = pcall(function()
+			readfile("ABYSALL_TEST_FILE")
+			end)
+
+	if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS" then
+		ExecutorSupport["readfile"] = true
+	end
+end
+
+if listfiles then
+local Success, Error = pcall(function()
+			listfiles("")
+			end)
+
+	if Success and typeof(listfiles("")) == "table" and #listfiles("") > 0 then
+		ExecutorSupport["listfiles"] = true
+	end
+end
+
+if makefolder then
+local Success1, Error1 = pcall(function()
+			makefolder("ABYSALL_TEST_FOLDER")
+			end)
+
+	if Success1 and ExecutorSupport["writefile"] then
+	writefile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
+	end
+
+
+	if Success1 then
+		local Success2 = pcall(function()
+		readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
+		end)
+
+if Success1 and Success2 then
+	ExecutorSupport["makefolder"] = true
+end
+end
+end
+
+if delfolder and ExecutorSupport["readfile"] then
+	local Success1, Error1 = pcall(function()
+			delfolder("ABYSALL_TEST_FOLDER")
+		end)
+
+	if Success1 then
+		local Success2 = pcall(function()
+		readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
+		end)
+
+if Success1 and not Success2 then
+	ExecutorSupport["delfolder"] = true
+end
+end
+end
+
+if delfile and ExecutorSupport["readfile"] then
+	local Success1, Error1 = pcall(function()
+			delfile("ABYSALL_TEST_FILE")
+		end)
+
+	if Success1 then
+		local Success2 = pcall(function()
+		readfile("ABYSALL_TEST_FILE")
+		end)
+
+if Success1 and not Success2 then
+	ExecutorSupport["delfile"] = true
+end
+end
+end
+
+
+
 
 
 task.wait(0.25)
@@ -241,3 +407,23 @@ getgenv().ExecutorSupport = ExecutorSupport
 
 NewPart:Destroy()
 NewPart2:Destroy()
+TestEvent:Destroy()
+
+local Successes = 0
+local TotalTests = 0
+
+for Name, Result in pairs(ExecutorSupport) do
+	TotalTests = TotalTests + 1
+	if Result == true then
+	ConsoleMessage = ConsoleMessage .. "[✅] " .. Name .. "\n"
+	else
+	ConsoleMessage = ConsoleMessage .. "[❌] " .. Name .. "\n"
+	end
+	if Result == true then
+		Successes = Successes + 1
+	end
+end
+
+local FinalScore = math.round((Successes / TotalTests) * 100)
+ConsoleMessage = ConsoleMessage .. "\nExecutor Support: " .. FinalScore .. "%"
+print(ConsoleMessage)
