@@ -120,11 +120,11 @@ function CheckHookMetaMethod()
 		if not Success then ExecutorSupport["hookmetamethod"] = false return end
 		if object.test == false then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
 		if ref() == true then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
-		
-		hookmetamethod(object, "__index", ref)
 		if object.test == true then
 		ExecutorSupport["hookmetamethod"] = true
 		end
+		hookmetamethod(object, "__index", ref)
+		
 	end
 end
 
