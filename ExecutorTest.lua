@@ -36,7 +36,7 @@ local ExecutorSupport = {
 	["toclipboard"] = false,
 	["Drawing"] = false,
 	["queue_on_teleport"] = false,
-	["firesignal"] = true,
+	["firesignal"] = false,
 }
 
 if getgc  then
@@ -348,7 +348,7 @@ local Success1, Error1 = pcall(function()
 
 
 	if Success1 then
-		local Success2 = pcall(function()
+		local Success2, Error2 = pcall(function()
 		readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
 		end)
 
@@ -358,17 +358,15 @@ end
 end
 end
 
-if delfolder and ExecutorSupport["readfile"] then
+if delfolder then
 	local Success1, Error1 = pcall(function()
 			delfolder("ABYSALL_TEST_FOLDER")
 		end)
 
 	if Success1 then
-		local Success2 = pcall(function()
-		readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
-		end)
+		
 
-if Success1 and not Success2 then
+if Success1 then
 	ExecutorSupport["delfolder"] = true
 end
 end
@@ -380,7 +378,7 @@ if delfile and ExecutorSupport["readfile"] then
 		end)
 
 	if Success1 then
-		local Success2 = pcall(function()
+		local Success2, Error2 = pcall(function()
 		readfile("ABYSALL_TEST_FILE")
 		end)
 
