@@ -425,5 +425,5 @@ for Name, Result in pairs(ExecutorSupport) do
 end
 
 local FinalScore = math.round((Successes / TotalTests) * 100)
-ConsoleMessage = ConsoleMessage .. "\nExecutor Support: " .. FinalScore .. "%"
+ConsoleMessage = ConsoleMessage .. "\n" .. identifyexecutor() .. " Function Support: " .. FinalScore .. "%"
 print(ConsoleMessage)
