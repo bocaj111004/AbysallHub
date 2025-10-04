@@ -24,7 +24,7 @@ local ExecutorSupport = {
 	["delfolder"] = false,
 	["fireproximityprompt"] = false,
 	["require"] = false,
-	["hookmetamethod"] = false,
+	["hookmetamethod"] = true,
 	["isnetworkowner"] = false,
 	["newcclosure"] = false,
 	["firetouchinterest"] = false,
@@ -208,13 +208,7 @@ ExecutorSupport["queue_on_teleport"] = true
 end
 
 
-CheckHookMetaMethod()
-CheckNewCClosure()
-CheckGetNameCallMethod()
-CheckGetRawMetaTable()
-CheckSetReadOnly()
-CheckDrawing()
-CheckQueueTeleport()
+
 
 if isnetworkowner then
 	
@@ -398,7 +392,13 @@ end
 
 
 
-
+CheckHookMetaMethod()
+CheckNewCClosure()
+CheckGetNameCallMethod()
+CheckGetRawMetaTable()
+CheckSetReadOnly()
+CheckDrawing()
+CheckQueueTeleport()
 
 task.wait(0.25)
 
