@@ -171,13 +171,14 @@ function CheckHookMetaMethod()
 end
 
 function CheckRequire()
+	local TestModule
 local Success, Error = pcall(function()
 			if game:FindFirstChild("CorePackages") then
-	local TestModule = require(game.CorePackages._GlobalPackageVersions)
+	TestModule = require(game.CorePackages._GlobalPackageVersions)
 			end
 		end)
 
-	if not Success then
+	if not Success or TestModule ~= nil then
 		ExecutorSupport["require"] = true
 	end
 end
