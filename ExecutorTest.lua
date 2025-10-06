@@ -11,9 +11,9 @@ local ConsoleMessage = [[
 | $$  | $$| $$$$$$$/    | $$   |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$
 |__/  |__/|_______/     |__/    \______/ |__/  |__/|________/|________/
                                                                        
-[✅] - Function is working.
-[⚠️] - Function is defined, but might be faulty/faked.
-[⛔] - Function does not work.
+[✅] - Function is working
+[⚠️] - Function is defined, but might be faulty/faked
+[⛔] - Function does not work
 
 Starting Executor Test...   
 
