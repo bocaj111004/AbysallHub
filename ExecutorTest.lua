@@ -191,9 +191,11 @@ end
 
 function CheckGetRawMetaTable()
 	if getrawmetatable then
-		local Success, Error = pcall(function()
-			local metatable = { __metatable = "ABYSALL_METATABLE_TEST" }
+		ocal metatable = { __metatable = "ABYSALL_METATABLE_TEST" }
 			local object = setmetatable({}, metatable)
+		local Success, Error = pcall(function()
+			l
+				getrawmetatable(object)
 		end)
 		if Success and getrawmetatable(object) == metatable then
 			ExecutorSupport["getrawmetatable"] = true
