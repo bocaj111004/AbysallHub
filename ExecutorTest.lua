@@ -171,15 +171,14 @@ function CheckHookMetaMethod()
 end
 
 function CheckRequire()
-	local TestModule
-local Success, Error = pcall(function()
-			if game:FindFirstChild("CorePackages") then
-	TestModule = require(game.CorePackages._GlobalPackageVersions)
-			end
-		end)
+	if getgc  then
+		local gctable = getgc(true)
 
-	if not Success or TestModule ~= nil then
-		ExecutorSupport["require"] = true
+		for i,v in pairs(getgc(true)) do
+			if type(v) == 'table' then
+				ExecutorSupport["require"] = true
+			end
+		end
 	end
 end
 
