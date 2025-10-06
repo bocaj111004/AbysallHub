@@ -157,7 +157,9 @@ end
 
 function CheckRequire()
 local Success, Error = pcall(function()
+			if game:FindFirstChild("CorePackages") then
 	local TestModule = require(game.CorePackages._GlobalPackageVersions)
+			end
 		end)
 
 	if not Success then
