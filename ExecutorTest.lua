@@ -45,7 +45,8 @@ local ExecutorSupport = {
 	["getrawmetatable"] = false,
 	["setreadonly"] = false,
 	["toclipboard"] = false,
-	["Drawing"] = false,
+	["Drawing.new"] = false,
+	["Drawing.Fonts"] = false,
 	["queue_on_teleport"] = false,
 	["firesignal"] = false,
 }
@@ -114,10 +115,24 @@ function CheckDrawing()
 	if Drawing and Drawing.new then
 		local Success, Error = pcall(function()
 			local t = Drawing.new("Triangle")
+				t:Destroy()
 		end)
 
 		if Success then
-			ExecutorSupport["Drawing"] = true
+			ExecutorSupport["Drawing.new"] = true
+		end
+	end
+
+	if Drawing and Drawing.Fonts then
+		local Success, Error = pcall(function()
+		assert(Drawing.Fonts.UI == 0, "Did not return the correct id for UI")
+	assert(Drawing.Fonts.System == 1, "Did not return the correct id for System")
+	assert(Drawing.Fonts.Plex == 2, "Did not return the correct id for Plex")
+	assert(Drawing.Fonts.Monospace == 3, "Did not return the correct id for Monospace")
+			end)
+
+		if Success then
+			ExecutorSupport["Drawing.Fonts"] = true
 		end
 	end
 end
@@ -502,7 +517,8 @@ local ExistingFunctions = {
 	["getrawmetatable"] = getrawmetatable,
 	["setreadonly"] = setreadonly,
 	["toclipboard"] = toclipboard,
-	["Drawing"] = Drawing,
+	["Drawing.new"] = (Drawing and Drawing.new),
+	["Drawing.Fonts"] = (Drawing and Drawing.Fonts),
 	["queue_on_teleport"] = queue_on_teleport,
 	["firesignal"] = firesignal,
 }
