@@ -62,17 +62,6 @@ if identifyexecutor then
 	end
 end
 
-if getgc  then
-	local gctable = getgc(true)
-
-	for i,v in pairs(getgc(true)) do
-		if type(v) == 'table' then
-			ExecutorSupport["require"] = true
-			break
-		end
-	end
-end
-
 
 if toclipboard then
 	ExecutorSupport["toclipboard"] = true
@@ -165,6 +154,17 @@ function CheckHookMetaMethod()
 
 	end
 end
+
+function CheckRequire()
+local Success, Error = pcall(function()
+	local TestModule = require(game.CorePackages._GlobalPackageVersions)
+		end)
+
+	if not Success then
+		ExecutorSupport["require"] = true
+	end
+end
+
 
 
 
@@ -450,8 +450,10 @@ end
 
 
 
-CheckNewCClosure()
 
+
+CheckNewCClosure()
+CheckRequire()
 CheckGetRawMetaTable()
 CheckSetReadOnly()
 CheckDrawing()
