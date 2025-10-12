@@ -353,7 +353,7 @@ if setfpscap then
 		setfpscap(6)
 	end)
 	
-	game:GetService("RunService").RenderStepped:Wait()
+	task.wait(0.1)
 	
 	if Success1 and GetFPS() <= 7 then
 		ExecutorSupport["setfpscap"] = true
