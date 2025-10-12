@@ -11,9 +11,10 @@ local ConsoleMessage = [[
 | $$  | $$| $$$$$$$/    | $$   |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$
 |__/  |__/|_______/     |__/    \______/ |__/  |__/|________/|________/
                                                                        
-[✅] - Function is working
-[⚠️] - Function is defined, but might be faulty/faked
-[⛔] - Function does not work
+[✅] - Function is fully working
+[⚠️] - Function is defined, but might be faked or only partially work
+[⛔] - Function is undefined
+[⏺️] - Function was not tested, possibly to avoid game detections
 
 Starting Executor Test...   
 
@@ -49,6 +50,13 @@ local ExecutorSupport = {
 	["Drawing.Fonts"] = false,
 	["queue_on_teleport"] = false,
 	["firesignal"] = false,
+	["gethiddenproperty"] = false,
+	["sethiddenproperty"] = false,
+	["getgc"] = false,
+	["loadstring"] = false,
+	["fireclickdetector"] = false,
+	["getnilinstances"] = false,
+	["setfpscap"] = false,
 }
 
 if getgenv then
@@ -62,7 +70,6 @@ if identifyexecutor then
 		ExecutorSupport["identifyexecutor"] = true
 	end
 end
-
 
 if toclipboard then
 	ExecutorSupport["toclipboard"] = true
@@ -83,6 +90,12 @@ NewPart2.Size = Vector3.new(100,100,100)
 NewPart2.Position = Vector3.new(0,2500,0)
 NewPart2.Anchored = false
 NewPart2.Parent = workspace
+local NewPart3 = Instance.new("Part")
+NewPart3.Transparency = 1
+NewPart3.Size = Vector3.new(100,100,100)
+NewPart3.Position = Vector3.new(0,2500,0)
+NewPart3.Anchored = true
+NewPart3.Parent = workspace
 local NewPrompt = Instance.new("ProximityPrompt")
 NewPrompt.Parent = NewPart
 NewPrompt.Enabled = false
@@ -92,7 +105,8 @@ local TestEvent = Instance.new("RemoteEvent", workspace)
 
 
 local ClickDetector = Instance.new("ClickDetector")
-ClickDetector.Parent = NewPart
+ClickDetector.Parent = NewPart3
+ClickDetector.MaxActivationDistance = math.huge
 ClickDetector.MouseClick:Connect(function()
 	ExecutorSupport["fireclickdetector"] = true
 end)
@@ -115,7 +129,7 @@ function CheckDrawing()
 	if Drawing and Drawing.new then
 		local Success, Error = pcall(function()
 			local t = Drawing.new("Triangle")
-				t:Destroy()
+			t:Destroy()
 		end)
 
 		if Success then
@@ -125,11 +139,11 @@ function CheckDrawing()
 
 	if Drawing and Drawing.Fonts then
 		local Success, Error = pcall(function()
-		assert(Drawing.Fonts.UI == 0, "Did not return the correct id for UI")
-	assert(Drawing.Fonts.System == 1, "Did not return the correct id for System")
-	assert(Drawing.Fonts.Plex == 2, "Did not return the correct id for Plex")
-	assert(Drawing.Fonts.Monospace == 3, "Did not return the correct id for Monospace")
-			end)
+			assert(Drawing.Fonts.UI == 0, "Did not return the correct id for UI")
+			assert(Drawing.Fonts.System == 1, "Did not return the correct id for System")
+			assert(Drawing.Fonts.Plex == 2, "Did not return the correct id for Plex")
+			assert(Drawing.Fonts.Monospace == 3, "Did not return the correct id for Monospace")
+		end)
 
 		if Success then
 			ExecutorSupport["Drawing.Fonts"] = true
@@ -171,11 +185,12 @@ function CheckHookMetaMethod()
 end
 
 function CheckRequire()
-	if getgc  then
+	if getgc then
 		local gctable = getgc(true)
 
 		for i,v in pairs(getgc(true)) do
 			if type(v) == 'table' then
+				ExecutorSupport["getgc"] = true
 				ExecutorSupport["require"] = true
 			end
 		end
@@ -209,10 +224,10 @@ end
 function CheckGetRawMetaTable()
 	if getrawmetatable then
 		local metatable = { __metatable = "ABYSALL_METATABLE_TEST" }
-			local object = setmetatable({}, metatable)
+		local object = setmetatable({}, metatable)
 		local Success, Error = pcall(function()
-			
-				getrawmetatable(object)
+
+			getrawmetatable(object)
 		end)
 		if Success and getrawmetatable(object) == metatable then
 			ExecutorSupport["getrawmetatable"] = true
@@ -239,7 +254,6 @@ function CheckSetReadOnly()
 end
 
 function CheckQueueTeleport()
-
 	local TestCode = [[
 			warn("test")
 			]]
@@ -252,30 +266,55 @@ function CheckQueueTeleport()
 		end
 
 	end
-
 end
 
-
-
+if getnilinstances then
+	local FirstInstance
+	local Success, Error = pcall(function()
+		FirstInstance = getnilinstances()[1]
+	end)
+	if Success and FirstInstance and typeof(FirstInstance) == "Instance" and FirstInstance.Parent == nil then
+		ExecutorSupport["getnilinstances"] = true
+	end
+end
 
 if isnetworkowner then
-
+	local NetworkValue1 = false
+	local NetworkValue2 = false
+	
+	local Success1, Error1 = pcall(function()
+		NetworkValue1 = isnetworkowner(NewPart)
+	end)
+	local Success2, Error2 = pcall(function()
+		NetworkValue2 = isnetworkowner(Instance.new("Model"))
+	end)
+	
+	if Success1 and NetworkValue1 == true and NetworkValue2 == false then
+	local Test1 = false
+	local Test2 = false
+	local Test3 = false
+	
+local Success3, Error3 = pcall(function()
 	if isnetworkowner(Instance.new("Part", workspace)) == true then
-		ExecutorSupport["isnetworkowner"] = true
+		Test1 = true
 	end
 
-	if isnetworkowner(Instance.new("Part")) == true then
-		ExecutorSupport["isnetworkowner"] = false
+	if isnetworkowner(Instance.new("Part")) ~= true then
+		Test2 = true
 	end
 
-
-	if isnetworkowner(NewPart) == false then
-		ExecutorSupport["isnetworkowner"] = false
+	if isnetworkowner(NewPart) == true then
+		Test3 = true
 	end
+end)
+
+if Success3 and Test1 == true and Test2 == true and Test3 == true then
+	ExecutorSupport["isnetworkowner"] = true
 end
 
-local ClickDetector = Instance.new("ClickDetector")
-ClickDetector.Parent = NewPart
+end
+end
+
 
 if replicatesignal then
 	local y,n = pcall(function()
@@ -305,6 +344,43 @@ if hookfunction then
 
 end
 
+if setfpscap then
+	local function GetFPS()
+		return math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+	end
+	
+	local Success1, Error1 = pcall(function()
+		setfpscap(6)
+	end)
+	
+	game:GetService("RunService").RenderStepped:Wait()
+	
+	if Success1 and GetFPS() <= 7 then
+		ExecutorSupport["setfpscap"] = true
+		setfpscap(7200)
+	end
+	
+	if not ExecutorSupport["setfpscap"] then
+	local Success2, Error2 = pcall(function()
+	setfpscap(7200)
+	end)
+	end
+end
+
+if clonefunction then
+	local ClonedFunction
+	local TestFunction = function()
+		return "ABYSALL_FUNCTION_TEST"
+	end
+	local Success, Error = pcall(function()
+		ClonedFunction = clonefunction(TestFunction)
+	end)
+	
+	if Success and ClonedFunction() == "ABYSALL_FUNCTION_TEST" and ClonedFunction ~= TestFunction then
+		ExecutorSupport["clonefunction"] = true
+	end
+end
+
 if cloneref then
 	local Clone
 	local Success, Error = pcall(function()
@@ -323,15 +399,16 @@ if gethui then
 end
 
 
-
-
-
-
-
-
-
-
-
+if loadstring then
+	local OldName = workspace.Name
+	local Success, Error = pcall(function()
+		loadstring([[workspace.Name = "ABYSALL_WORKSPACE_TEST"]])()
+	end)
+	if Success and workspace.Name == "ABYSALL_WORKSPACE_TEST" then
+		workspace.Name = OldName
+		ExecutorSupport["loadstring"] = true
+	end
+end
 
 if fireproximityprompt then
 	local Success, Error = pcall(function()
@@ -351,9 +428,31 @@ if firesignal then
 	end)
 end
 
+if gethiddenproperty then
+	local Property
+	local Success, Error = pcall(function()
+		Property = gethiddenproperty(NewPart, "Size")
+	end)
+	if Success and Property ~= nil then
+		if typeof(Property) == "Vector3" then
+		ExecutorSupport["gethiddenproperty"] = true
+		end
+	end
+end
 
-
-
+if sethiddenproperty then
+	local OldSize = NewPart.Size
+	local Success, Error = pcall(function()
+		sethiddenproperty(NewPart, "Size", Vector3.new(3,3,3))
+	end)
+	if Success and ExecutorSupport["gethiddenproperty"] then
+		local Property = gethiddenproperty(NewPart, "Size")
+		if typeof(Property) == "Vector3" and Property == Vector3.new(3,3,3) then
+			ExecutorSupport["sethiddenproperty"] = true
+			sethiddenproperty(NewPart, "Size", OldSize)
+		end
+	end
+end
 
 if firetouchinterest then
 	local Success, Error = pcall(function()
@@ -482,11 +581,12 @@ task.wait(0.25)
 
 
 if ExecutorSupport["getgenv"] then
-getgenv().ExecutorSupport = ExecutorSupport
+	getgenv().ExecutorSupport = ExecutorSupport
 end
 
 NewPart:Destroy()
 NewPart2:Destroy()
+NewPart3:Destroy()
 TestEvent:Destroy()
 
 local Successes = 0
@@ -521,6 +621,13 @@ local ExistingFunctions = {
 	["Drawing.Fonts"] = (Drawing and Drawing.Fonts),
 	["queue_on_teleport"] = queue_on_teleport,
 	["firesignal"] = firesignal,
+	["gethiddenproperty"] = gethiddenproperty,
+	["sethiddenproperty"] = sethiddenproperty,
+	["getgc"] = getgc,
+	["loadstring"] = loadstring,
+	["fireclickdetector"] = fireclickdetector,
+	["getnilinstances"] = getnilinstances,
+	["setfpscap"] = setfpscap
 }
 
 for Name, Result in pairs(ExecutorSupport) do
