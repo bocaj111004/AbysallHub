@@ -350,7 +350,7 @@ if setfpscap then
 	end
 	
 	local Success1, Error1 = pcall(function()
-		setfpscap(1)
+		setfpscap(4)
 	end)
 	
 	task.wait(0.15)
