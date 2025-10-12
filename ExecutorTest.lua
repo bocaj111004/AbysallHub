@@ -350,19 +350,19 @@ if setfpscap then
 	end
 	
 	local Success1, Error1 = pcall(function()
-		setfpscap(6)
+		setfpscap(1)
 	end)
 	
-	task.wait(0.1)
+	task.wait(0.15)
 	
 	if Success1 and GetFPS() <= 7 then
 		ExecutorSupport["setfpscap"] = true
-		setfpscap(7200)
+		setfpscap(240)
 	end
 	
 	if not ExecutorSupport["setfpscap"] then
 	local Success2, Error2 = pcall(function()
-	setfpscap(7200)
+	setfpscap(240)
 	end)
 	end
 end
