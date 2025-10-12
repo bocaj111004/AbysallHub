@@ -357,12 +357,12 @@ if setfpscap then
 	
 	if Success1 and GetFPS() <= 7 then
 		ExecutorSupport["setfpscap"] = true
-		setfpscap(240)
+		setfpscap(0)
 	end
 	
 	if not ExecutorSupport["setfpscap"] then
 	local Success2, Error2 = pcall(function()
-	setfpscap(240)
+	setfpscap(0)
 	end)
 	end
 end
