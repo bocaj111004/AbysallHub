@@ -196,12 +196,11 @@ function CheckGetGC()
 		local Success, Error = pcall(function()
 		for i,v in pairs(getgc(true)) do
 			if type(v) == 'table' then
-				
 				if v == DummyTable or v == DummyFunction then
 					Test1 = true
 				end
 				for i,v in pairs(getgc(false)) do
-					if type(v) == 'table' or v == DummyTable then		
+					if type(v) == DummyFunction then		
 						ExecutorSupport["getgc"] = true
 					end
 				end
@@ -213,8 +212,7 @@ end
 
 function CheckRequire()
 	local Module = Player.PlayerScripts:WaitForChild("PlayerModule")
-	local Test1 = false
-	local Test2
+	local Test = false
 	
 	local Success, Error = pcall(function()
 		local LoadedModule = require(Module)
@@ -223,16 +221,13 @@ function CheckRequire()
 			return "ABYSALL_REQUIRE_TEST"
 		end
 		if LoadedModule:GetControls() == "ABYSALL_REQUIRE_TEST" then
-			Test1 = true
+			Test = true
 			LoadedModule.GetControls = OldFunction
-		end
-		if Test1 == true and LoadedModule:GetControls() ~= "ABYSALL_REQUIRE_TEST" then
-			Test2 = true
 		end
 	end)
 	
 	if ExecutorSupport["getthreadidentity"] then
-	if Success and Test1 == true and Test2 == true and getthreadidentity() > 3 then
+	if Success and Test == true and getthreadidentity() > 3 then
 		ExecutorSupport["require"] = true
 	end
 	end
@@ -387,7 +382,7 @@ end
 			replicatesignal(ClickDetector.MouseActionReplicated, Player)
 		end)
 	local Success2, Error2 = pcall(function()
-		replicatesignal(ClickDetector.MouseActionReplicated, 124)
+		replicatesignal(Instance.new("Frame").MouseWheelForward)
 	end)
 
 if Success1 and not Success2 then
