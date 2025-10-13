@@ -18,7 +18,8 @@ local ConsoleMessage = [[
 Starting Executor Test...   
 
 ]];
-local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,getrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
+local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,getrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
+local SkippedFunctions = {};
 if getgenv then
 	local Test1 = false;
 	local Test2 = false;
@@ -521,6 +522,17 @@ if readfile then
 		ExecutorSupport['readfile'] = true;
 	end
 end
+if loadfile and ExecutorSupport["writefile"] then
+	local Success, Error = pcall(function()
+		writefile("ABYSALL_TEST_FILE_3", "game:GetService('CoreGui').Name = 'ABYSALL_LOADFILE_TEST'")
+		local Chunk = loadfile("ABYSALL_TEST_FILE_3")
+		Chunk()
+	end);
+	if (Success and (game:GetService("CoreGui").Name == "ABYSALL_LOADFILE_TEST")) then
+		ExecutorSupport['loadfile'] = true;
+		game:GetService("CoreGui").Name = "CoreGui"
+	end
+end
 if listfiles then
 	local Success, Error = pcall(function()
 		listfiles("");
@@ -607,13 +619,15 @@ NewPart3:Destroy();
 TestEvent:Destroy();
 local Successes = 0;
 local TotalTests = 0;
-local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,getrawmetatable=getrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
+local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,getrawmetatable=getrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
 for Name, Result in pairs(ExecutorSupport) do
 	TotalTests = TotalTests + 1;
 	if (Result == true) then
 		ConsoleMessage = ConsoleMessage .. "[✅] " .. Name .. "\n";
 	elseif (ExistingFunctions[Name] ~= nil) then
 		ConsoleMessage = ConsoleMessage .. "[⚠️] " .. Name .. "\n";
+	elseif table.find(SkippedFunctions, Name) then
+		ConsoleMessage = ConsoleMessage .. "[⏺️] " .. Name .. "\n";
 	else
 		ConsoleMessage = ConsoleMessage .. "[⛔] " .. Name .. "\n";
 	end
