@@ -1,5 +1,3 @@
-
-
 local ConsoleMessage = [[
 
   /$$$$$$  /$$$$$$$  /$$     /$$ /$$$$$$   /$$$$$$  /$$       /$$      
@@ -19,7 +17,6 @@ local ConsoleMessage = [[
 Starting Executor Test...   
 
 ]]
-
 
 local ExecutorSupport = {
 	["getgenv"] = false,
@@ -58,6 +55,8 @@ local ExecutorSupport = {
 	["fireclickdetector"] = false,
 	["getnilinstances"] = false,
 	["setfpscap"] = false,
+	["setthreadidentity"] = false,
+	["getthreadidentity"] = false
 }
 
 if getgenv then
@@ -73,10 +72,7 @@ if identifyexecutor then
 end
 
 if toclipboard then
-	local Success, Error = pcall(function()
-		toclipboard("ABYSALL_CLIPBOARD_TEST")
-	end)
-	if Success then
+	if typeof(toclipboard) == "function" then
 		ExecutorSupport["toclipboard"] = true
 	end
 end
@@ -104,7 +100,7 @@ NewPart3.Anchored = true
 NewPart3.Parent = workspace
 local NewPrompt = Instance.new("ProximityPrompt")
 NewPrompt.Parent = NewPart
-NewPrompt.Enabled = false
+NewPrompt.Enabled = true
 NewPrompt.MaxActivationDistance = 999999
 NewPrompt.RequiresLineOfSight = false
 local TestEvent = Instance.new("RemoteEvent", workspace)
@@ -125,6 +121,7 @@ end)
 NewPrompt.Triggered:Connect(function()
 	ExecutorSupport["fireproximityprompt"] = true
 end)
+
 
 TestEvent.OnClientEvent:Connect(function()
 	ExecutorSupport["firesignal"] = true
@@ -190,20 +187,54 @@ function CheckHookMetaMethod()
 	end
 end
 
-function CheckRequire()
+function CheckGetGC()
 	if getgc then
-		local gctable = getgc(true)
-
+		local Test1 = false
+		local Test2 = true
+		local DummyFunction = function() end
+		local DummyTable = {}
+		local Success, Error = pcall(function()
 		for i,v in pairs(getgc(true)) do
 			if type(v) == 'table' then
-				ExecutorSupport["require"] = true
+				
+				if v == DummyTable or v == DummyFunction then
+					Test1 = true
+				end
 				for i,v in pairs(getgc(false)) do
-					if type(v) ~= 'table' then		
+					if type(v) == 'table' or v == DummyTable then		
 						ExecutorSupport["getgc"] = true
 					end
 				end
 			end
 		end
+		end)
+		end
+end
+
+function CheckRequire()
+	local Module = Player.PlayerScripts:WaitForChild("PlayerModule")
+	local Test1 = false
+	local Test2
+	
+	local Success, Error = pcall(function()
+		local LoadedModule = require(Module)
+		local OldFunction = LoadedModule.GetControls
+		LoadedModule.GetControls = function()
+			return "ABYSALL_REQUIRE_TEST"
+		end
+		if LoadedModule:GetControls() == "ABYSALL_REQUIRE_TEST" then
+			Test1 = true
+			LoadedModule.GetControls = OldFunction
+		end
+		if Test1 == true and LoadedModule:GetControls() ~= "ABYSALL_REQUIRE_TEST" then
+			Test2 = true
+		end
+	end)
+	
+	if ExecutorSupport["getthreadidentity"] then
+	if Success and Test1 == true and Test2 == true and getthreadidentity() > 3 then
+		ExecutorSupport["require"] = true
+	end
 	end
 end
 
@@ -352,12 +383,16 @@ end
 
 
 	if replicatesignal then
-		local y,n = pcall(function()
-			replicatesignal(ClickDetector.MouseActionReplicated, Player, 0)
+		local Success1, Error1 = pcall(function()
+			replicatesignal(ClickDetector.MouseActionReplicated, Player)
 		end)
-		if y == true then
-			ExecutorSupport["replicatesignal"] = true
-		end
+	local Success2, Error2 = pcall(function()
+		replicatesignal(ClickDetector.MouseActionReplicated, 124)
+	end)
+
+if Success1 and not Success2 then
+	ExecutorSupport["replicatesignal"] = true
+end
 	end
 
 	local function TestFunction()
@@ -401,6 +436,30 @@ end
 			end)
 		end
 	end
+	
+	if getthreadidentity then
+		local ThreadIdentity = 0
+		
+		local Success, Error = pcall(function()
+			ThreadIdentity = getthreadidentity()
+		end)
+		
+		if Success and typeof(ThreadIdentity) == "number" and ThreadIdentity ~= 0 then
+			ExecutorSupport["getthreadidentity"] = true
+		end
+	end
+	
+if setthreadidentity and ExecutorSupport["getthreadidentity"] then
+	local ThreadIdentity = getthreadidentity()
+
+	local Success, Error = pcall(function()
+		setthreadidentity(1)
+	end)
+
+	if Success and typeof(ThreadIdentity) == "number" and getthreadidentity() == 1 and ThreadIdentity ~= 1 then
+		ExecutorSupport["setthreadidentity"] = true
+	end
+end
 
 	if clonefunction then
 		local ClonedFunction
@@ -428,8 +487,10 @@ end
 	end
 
 	if gethui then
-		if gethui() ~= nil and typeof(gethui()) == "Instance" and gethui() ~= game.CoreGui then
+		if gethui() ~= nil and typeof(gethui()) == "Instance" and gethui() ~= game:GetService("CoreGui") and gethui().Parent ~= nil then
+		if gethui():IsA("CoreGui") or game:GetService("CoreGui") ~= nil and gethui():IsDescendantOf(game:GetService("CoreGui")) then
 			ExecutorSupport["gethui"] = true
+			end
 		end
 	end
 
@@ -605,6 +666,7 @@ end
 
 	CheckNewCClosure()
 	CheckRequire()
+	CheckGetGC()
 	CheckGetRawMetaTable()
 	CheckSetReadOnly()
 	CheckIsReadOnly()
@@ -664,7 +726,9 @@ end
 		["loadstring"] = loadstring,
 		["fireclickdetector"] = fireclickdetector,
 		["getnilinstances"] = getnilinstances,
-		["setfpscap"] = setfpscap
+		["setfpscap"] = setfpscap,
+		["getthreadidentity"] = getthreadidentity,
+		["setthreadidentity"] = setthreadidentity,
 	}
 
 	for Name, Result in pairs(ExecutorSupport) do
