@@ -11,7 +11,7 @@ local ConsoleMessage = [[
 |__/  |__/|_______/     |__/    \______/ |__/  |__/|________/|________/
                                                                        
 [✅] Function is fully working
-[⚠️] Function is defined, but might be faulty or faked
+[⚠️] Function is defined, but failed its test
 [⛔] Function is not defined
 [⏺️] Function was not tested, possibly to avoid game detections
 
