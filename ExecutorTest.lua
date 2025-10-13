@@ -1,4 +1,4 @@
-local Time = tick()
+local Time = tick();
 local ConsoleMessage = [[
 
   /$$$$$$  /$$$$$$$  /$$     /$$ /$$$$$$   /$$$$$$  /$$       /$$      
@@ -17,799 +17,600 @@ local ConsoleMessage = [[
 
 Starting Executor Test...   
 
-]]
-
-local ExecutorSupport = {
-	["getgenv"] = false,
-	["identifyexecutor"] = false,
-	["writefile"] = false,
-	["isfile"] = false,
-	["readfile"] = false,
-	["listfiles"] = false,
-	["delfile"] = false,
-	["appendfile"] = false,
-	["makefolder"] = false,
-	["delfolder"] = false,
-	["fireproximityprompt"] = false,
-	["require"] = false,
-	["hookmetamethod"] = false,
-	["isnetworkowner"] = false,
-	["cloneref"] = false,
-	["gethui"] = false,
-	["newcclosure"] = false,
-	["firetouchinterest"] = false,
-	["replicatesignal"] = false,
-	["getnamecallmethod"] = false,
-	["hookfunction"] = false,
-	["getrawmetatable"] = false,
-	["setreadonly"] = false,
-	["isreadonly"] = false,
-	["toclipboard"] = false,
-	["Drawing.new"] = false,
-	["Drawing.Fonts"] = false,
-	["queue_on_teleport"] = false,
-	["firesignal"] = false,
-	["gethiddenproperty"] = false,
-	["sethiddenproperty"] = false,
-	["getgc"] = false,
-	["loadstring"] = false,
-	["fireclickdetector"] = false,
-	["getnilinstances"] = false,
-	["setfpscap"] = false,
-	["setthreadidentity"] = false,
-	["getthreadidentity"] = false
-}
-
+]];
+local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,getrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
 if getgenv then
-	local Test1 = false
-	local Test2 = false
+	local Test1 = false;
+	local Test2 = false;
 	local Success, Error = pcall(function()
-		if typeof(getgenv()) == "table" and getgenv().getgenv then
-
-			getgenv().ABYSALL_GENV_TEST = "ABYSALL_GENV_TEST_VALUE"
-
-			if getgenv().ABYSALL_GENV_TEST == "ABYSALL_GENV_TEST_VALUE" then
-				Test1 = true
+		if ((typeof(getgenv()) == "table") and getgenv().getgenv) then
+			getgenv().ABYSALL_GENV_TEST = "ABYSALL_GENV_TEST_VALUE";
+			if (getgenv().ABYSALL_GENV_TEST == "ABYSALL_GENV_TEST_VALUE") then
+				Test1 = true;
 			end
-
-			getgenv().ABYSALL_GENV_TEST = nil
-
-			if getgenv().ABYSALL_GENV_TEST == nil then
-				Test2 = true
+			getgenv().ABYSALL_GENV_TEST = nil;
+			if (getgenv().ABYSALL_GENV_TEST == nil) then
+				Test2 = true;
 			end
 		end
-	end)
-
-	if Success and Test1 == true and Test2 == true then
-		ExecutorSupport["getgenv"] = true
+	end);
+	if (Success and (Test1 == true) and (Test2 == true)) then
+		ExecutorSupport['getgenv'] = true;
 	end
 end
-
 if identifyexecutor then
-	if identifyexecutor() ~= nil and typeof(identifyexecutor()) == "string" then
-		ExecutorSupport["identifyexecutor"] = true
+	if ((identifyexecutor() ~= nil) and (typeof(identifyexecutor()) == "string")) then
+		ExecutorSupport['identifyexecutor'] = true;
 	end
 end
-
 if toclipboard then
-	if typeof(toclipboard) == "function" then
-		ExecutorSupport["toclipboard"] = true
+	if (typeof(toclipboard) == "function") then
+		ExecutorSupport['toclipboard'] = true;
 	end
 end
-
-
-
-local Player = game:GetService("Players").LocalPlayer
-local NewPart = Instance.new("Part")
-NewPart.Transparency = 1
-NewPart.Size = Vector3.new(100,100,100)
-NewPart.Position = Vector3.new(0,2500,0)
-NewPart.Anchored = false
-NewPart.Parent = workspace
-local NewPart2 = Instance.new("Part")
-NewPart2.Transparency = 1
-NewPart2.Size = Vector3.new(100,100,100)
-NewPart2.Position = Vector3.new(0,2500,0)
-NewPart2.Anchored = false
-NewPart2.Parent = workspace
-local NewPart3 = Instance.new("Part")
-NewPart3.Transparency = 1
-NewPart3.Size = Vector3.new(100,100,100)
-NewPart3.Position = Vector3.new(0,2500,0)
-NewPart3.Anchored = true
-NewPart3.Parent = workspace
-local NewPrompt = Instance.new("ProximityPrompt")
-NewPrompt.Parent = NewPart
-NewPrompt.Enabled = true
-NewPrompt.MaxActivationDistance = 999999
-NewPrompt.RequiresLineOfSight = false
-local TestEvent = Instance.new("RemoteEvent", workspace)
-
-
-local ClickDetector = Instance.new("ClickDetector")
-ClickDetector.Parent = NewPart3
-ClickDetector.MaxActivationDistance = math.huge
+local Player = game:GetService("Players").LocalPlayer;
+local NewPart = Instance.new("Part");
+NewPart.Transparency = 1;
+NewPart.Size = Vector3.new(100, 100, 100);
+NewPart.Position = Vector3.new(0, 2500, 0);
+NewPart.Anchored = false;
+NewPart.Parent = workspace;
+local NewPart2 = Instance.new("Part");
+NewPart2.Transparency = 1;
+NewPart2.Size = Vector3.new(100, 100, 100);
+NewPart2.Position = Vector3.new(0, 2500, 0);
+NewPart2.Anchored = false;
+NewPart2.Parent = workspace;
+local NewPart3 = Instance.new("Part");
+NewPart3.Transparency = 1;
+NewPart3.Size = Vector3.new(100, 100, 100);
+NewPart3.Position = Vector3.new(0, 2500, 0);
+NewPart3.Anchored = true;
+NewPart3.Parent = workspace;
+local NewPrompt = Instance.new("ProximityPrompt");
+NewPrompt.Parent = NewPart;
+NewPrompt.Enabled = true;
+NewPrompt.MaxActivationDistance = 999999;
+NewPrompt.RequiresLineOfSight = false;
+local TestEvent = Instance.new("RemoteEvent", workspace);
+local ClickDetector = Instance.new("ClickDetector");
+ClickDetector.Parent = NewPart3;
+ClickDetector.MaxActivationDistance = math.huge;
 ClickDetector.MouseClick:Connect(function()
-	ExecutorSupport["fireclickdetector"] = true
-end)
-
+	ExecutorSupport['fireclickdetector'] = true;
+end);
 NewPart.Touched:Connect(function()
-	ExecutorSupport["firetouchinterest"] = true
-end)
-
-
+	ExecutorSupport['firetouchinterest'] = true;
+end);
 NewPrompt.Triggered:Connect(function()
-	ExecutorSupport["fireproximityprompt"] = true
-end)
-
-
+	ExecutorSupport['fireproximityprompt'] = true;
+end);
 TestEvent.OnClientEvent:Connect(function()
-	ExecutorSupport["firesignal"] = true
-end)
-
-
+	ExecutorSupport['firesignal'] = true;
+end);
 function CheckDrawing()
-	local DrawingTest = false
-	if Drawing and Drawing.new then
+	local DrawingTest = false;
+	if (Drawing and Drawing.new) then
 		local Success, Error = pcall(function()
-			local t = Drawing.new("Triangle")
-			if typeof(t.Visible) == "boolean" then
-				DrawingTest = true
+			local t = Drawing.new("Triangle");
+			if (typeof(t.Visible) == "boolean") then
+				DrawingTest = true;
 			end
-			t:Destroy()
-		end)
-
-		if Success and DrawingTest then
-			ExecutorSupport["Drawing.new"] = true
+			t:Destroy();
+		end);
+		if (Success and DrawingTest) then
+			ExecutorSupport["Drawing.new"] = true;
 		end
 	end
-	
-	local FontTest1 = false
-	local FontTest2 = false
-	local FontTest3 = false
-	local FontTest4 = false
-	
-
-	if Drawing and Drawing.Fonts then
+	local FontTest1 = false;
+	local FontTest2 = false;
+	local FontTest3 = false;
+	local FontTest4 = false;
+	if (Drawing and Drawing.Fonts) then
 		local Success, Error = pcall(function()
-			if Drawing.Fonts.UI == 0 then
-				FontTest1 = true
+			if (Drawing.Fonts.UI == 0) then
+				FontTest1 = true;
 			end
-			if Drawing.Fonts.System == 1 then
-				FontTest2 = true
+			if (Drawing.Fonts.System == 1) then
+				FontTest2 = true;
 			end
-			if Drawing.Fonts.Plex == 2 then
-				FontTest3 = true
+			if (Drawing.Fonts.Plex == 2) then
+				FontTest3 = true;
 			end
-			if Drawing.Fonts.Monospace == 3 then
-				FontTest4 = true
+			if (Drawing.Fonts.Monospace == 3) then
+				FontTest4 = true;
 			end
-		end)
-
-		if Success and FontTest1 == true and FontTest2 == true and FontTest3 == true and FontTest4 == true then
-			ExecutorSupport["Drawing.Fonts"] = true
+		end);
+		if (Success and (FontTest1 == true) and (FontTest2 == true) and (FontTest3 == true) and (FontTest4 == true)) then
+			ExecutorSupport["Drawing.Fonts"] = true;
 		end
 	end
 end
-
 function CheckNewCClosure()
 	if newcclosure then
-
 		local function testfunc()
-			return false
+			return false;
 		end
-
-		local testC = newcclosure(testfunc)
-		if testfunc() ~= testC() then return end
-		if test == testC then return end
-		if not iscclosure(testC) then return end
-		ExecutorSupport["newcclosure"] = true
+		local testC = newcclosure(testfunc);
+		if (testfunc() ~= testC()) then
+			return;
+		end
+		if (test == testC) then
+			return;
+		end
+		if not iscclosure(testC) then
+			return;
+		end
+		ExecutorSupport['newcclosure'] = true;
 	end
 end
-
 function CheckHookMetaMethod()
-	if hookmetamethod and ExecutorSupport["newcclosure"] then
-		local object = setmetatable({}, { __index = newcclosure(function() return false end), __metatable = "ABYSALL_METATABLE_TEST" })
-		local ref
+	if (hookmetamethod and ExecutorSupport['newcclosure']) then
+		local object = setmetatable({}, {__index=newcclosure(function()
+			return false;
+		end),__metatable="ABYSALL_METATABLE_TEST"});
+		local ref;
 		local Success, Error = pcall(function()
-			ref = hookmetamethod(object, "__index", function() return true end)
-		end)
-		if not Success then ExecutorSupport["hookmetamethod"] = false return end
-		if object.test == false then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
-		if ref() == true then ExecutorSupport["hookmetamethod"] = false hookmetamethod(object, "__index", ref) return end
-		if object.test == true then
-			ExecutorSupport["hookmetamethod"] = true
+			ref = hookmetamethod(object, "__index", function()
+				return true;
+			end);
+		end);
+		if not Success then
+			ExecutorSupport['hookmetamethod'] = false;
+			return;
 		end
-		hookmetamethod(object, "__index", ref)
-
+		if (object.test == false) then
+			ExecutorSupport['hookmetamethod'] = false;
+			hookmetamethod(object, "__index", ref);
+			return;
+		end
+		if (ref() == true) then
+			ExecutorSupport['hookmetamethod'] = false;
+			hookmetamethod(object, "__index", ref);
+			return;
+		end
+		if (object.test == true) then
+			ExecutorSupport['hookmetamethod'] = true;
+		end
+		hookmetamethod(object, "__index", ref);
 	end
 end
-
 function CheckGetGC()
 	if getgc then
-		local Test1 = false
-		local Test2 = false
-		local function DummyFunction() end
-		local DummyTable = {}
+		local Test1 = false;
+		local Test2 = false;
+		local function DummyFunction()
+		end
+		local DummyTable = {};
 		local Success, Error = pcall(function()
-			for i,v in pairs(getgc(true)) do
-				if v == DummyTable or v == DummyFunction then
-					Test1 = true
-				end
-
-			end
-			for i,v in pairs(getgc(false)) do
-				if v == DummyFunction then		
-					Test2 = true
+			for i, v in pairs(getgc(true)) do
+				if ((v == DummyTable) or (v == DummyFunction)) then
+					Test1 = true;
 				end
 			end
-		end)
-		if Success and Test1 == true and Test2 == true then
-			ExecutorSupport["getgc"] = true
+			for i, v in pairs(getgc(false)) do
+				if (v == DummyFunction) then
+					Test2 = true;
+				end
+			end
+		end);
+		if (Success and (Test1 == true) and (Test2 == true)) then
+			ExecutorSupport['getgc'] = true;
 		end
 	end
 end
-
 function CheckRequire()
-	local Module = Player.PlayerScripts:WaitForChild("PlayerModule")
-	local Test = false
-
+	local Module = Player.PlayerScripts:WaitForChild("PlayerModule");
+	local Test = false;
 	local Success, Error = pcall(function()
-		local LoadedModule = require(Module)
-		local OldFunction = LoadedModule.GetControls
+		local LoadedModule = require(Module);
+		local OldFunction = LoadedModule.GetControls;
 		LoadedModule.GetControls = function()
-			return "ABYSALL_REQUIRE_TEST"
+			return "ABYSALL_REQUIRE_TEST";
+		end;
+		if (LoadedModule:GetControls() == "ABYSALL_REQUIRE_TEST") then
+			Test = true;
+			LoadedModule.GetControls = OldFunction;
 		end
-		if LoadedModule:GetControls() == "ABYSALL_REQUIRE_TEST" then
-			Test = true
-			LoadedModule.GetControls = OldFunction
-		end
-	end)
-
-	if ExecutorSupport["getthreadidentity"] then
-		if Success and Test == true and getthreadidentity() > 3 then
-			ExecutorSupport["require"] = true
+	end);
+	if ExecutorSupport['getthreadidentity'] then
+		if (Success and (Test == true) and (getthreadidentity() > 3)) then
+			ExecutorSupport['require'] = true;
 		end
 	end
 end
-
-
-
-
 function CheckGetNameCallMethod()
-	if not ExecutorSupport["hookmetamethod"] or not getnamecallmethod then
-		return
+	if (not ExecutorSupport['hookmetamethod'] or not getnamecallmethod) then
+		return;
 	end
-	local method
-	local ref
+	local method;
+	local ref;
 	ref = hookmetamethod(game, "__namecall", function(...)
 		if not method then
-
-			method = getnamecallmethod()
-
+			method = getnamecallmethod();
 		end
-		return ref(...)
-	end)
-	game:GetService("Lighting")
-	if method == "GetService" then
-		ExecutorSupport["getnamecallmethod"] = true
+		return ref(...);
+	end);
+	game:GetService("Lighting");
+	if (method == "GetService") then
+		ExecutorSupport['getnamecallmethod'] = true;
 	end
-
 end
-
 function CheckGetRawMetaTable()
 	if getrawmetatable then
-		local metatable = { __metatable = "ABYSALL_METATABLE_TEST" }
-		local object = setmetatable({}, metatable)
+		local metatable = {__metatable="ABYSALL_METATABLE_TEST"};
+		local object = setmetatable({}, metatable);
 		local Success, Error = pcall(function()
-
-			getrawmetatable(object)
-		end)
-		if Success and getrawmetatable(object) == metatable then
-			ExecutorSupport["getrawmetatable"] = true
+			getrawmetatable(object);
+		end);
+		if (Success and (getrawmetatable(object) == metatable)) then
+			ExecutorSupport['getrawmetatable'] = true;
 		end
-
 	end
-
 end
-
 function CheckSetReadOnly()
 	if setreadonly then
-		local object = { success = false }
-		table.freeze(object)
-		setreadonly(object, false)
-
+		local object = {success=false};
+		table.freeze(object);
+		setreadonly(object, false);
 		local Success, Error = pcall(function()
-			object.success = true
-		end)
+			object.success = true;
+		end);
 		if Success then
-			ExecutorSupport["setreadonly"] = true
+			ExecutorSupport['setreadonly'] = true;
 		end
-
 	end
 end
-
 function CheckIsReadOnly()
 	if isreadonly then
-		local Test1 =false
-		local Test2 = false
-
-		local object = { success = false }
+		local Test1 = false;
+		local Test2 = false;
+		local object = {success=false};
 		local Success1, Error1 = pcall(function()
-			if isreadonly(object) == false then
-				Test1 = true
+			if (isreadonly(object) == false) then
+				Test1 = true;
 			end
-		end)
-		table.freeze(object)
-
+		end);
+		table.freeze(object);
 		local Success2, Error2 = pcall(function()
-			if isreadonly(object) == true then
-				Test2 = true
+			if (isreadonly(object) == true) then
+				Test2 = true;
 			end
-		end)
-		if Success1 and Success2 and Test1 == true and Test2 == true then
-			ExecutorSupport["isreadonly"] = true
+		end);
+		if (Success1 and Success2 and (Test1 == true) and (Test2 == true)) then
+			ExecutorSupport['isreadonly'] = true;
 		end
-
 	end
 end
-
 function CheckQueueTeleport()
 	local TestCode = [[
 			warn("test")
-			]]
+			]];
 	if queue_on_teleport then
 		local Success, Error = pcall(function()
-			queue_on_teleport(TestCode)
-		end)
+			queue_on_teleport(TestCode);
+		end);
 		if Success then
-			ExecutorSupport["queue_on_teleport"] = true
+			ExecutorSupport['queue_on_teleport'] = true;
 		end
-
 	end
 end
-
 if getnilinstances then
-	local FirstInstance
+	local FirstInstance;
 	local Success, Error = pcall(function()
-		FirstInstance = getnilinstances()[1]
-	end)
-	if Success and FirstInstance and typeof(FirstInstance) == "Instance" and FirstInstance.Parent == nil then
-		ExecutorSupport["getnilinstances"] = true
+		FirstInstance = getnilinstances()[1];
+	end);
+	if (Success and FirstInstance and (typeof(FirstInstance) == "Instance") and (FirstInstance.Parent == nil)) then
+		ExecutorSupport['getnilinstances'] = true;
 	end
 end
-
 if isnetworkowner then
-	local NetworkValue1 = false
-	local NetworkValue2 = false
-
+	local NetworkValue1 = false;
+	local NetworkValue2 = false;
 	local Success1, Error1 = pcall(function()
-		NetworkValue1 = isnetworkowner(NewPart)
-	end)
+		NetworkValue1 = isnetworkowner(NewPart);
+	end);
 	local Success2, Error2 = pcall(function()
-		NetworkValue2 = isnetworkowner(Instance.new("Model"))
-	end)
-
-	if Success1 and NetworkValue1 == true and NetworkValue2 == false then
-		local Test1 = false
-		local Test2 = false
-		local Test3 = false
-
+		NetworkValue2 = isnetworkowner(Instance.new("Model"));
+	end);
+	if (Success1 and (NetworkValue1 == true) and (NetworkValue2 == false)) then
+		local Test1 = false;
+		local Test2 = false;
+		local Test3 = false;
 		local Success3, Error3 = pcall(function()
-			if isnetworkowner(Instance.new("Part", workspace)) == true then
-				Test1 = true
+			if (isnetworkowner(Instance.new("Part", workspace)) == true) then
+				Test1 = true;
 			end
-
-			if isnetworkowner(Instance.new("Part")) ~= true then
-				Test2 = true
+			if (isnetworkowner(Instance.new("Part")) ~= true) then
+				Test2 = true;
 			end
-
-			if isnetworkowner(NewPart) == true then
-				Test3 = true
+			if (isnetworkowner(NewPart) == true) then
+				Test3 = true;
 			end
-		end)
-
-		if Success3 and Test1 == true and Test2 == true and Test3 == true then
-			ExecutorSupport["isnetworkowner"] = true
+		end);
+		if (Success3 and (Test1 == true) and (Test2 == true) and (Test3 == true)) then
+			ExecutorSupport['isnetworkowner'] = true;
 		end
-
 	end
 end
-
-
 if replicatesignal then
 	local Success1, Error1 = pcall(function()
-		replicatesignal(Instance.new("Frame").MouseWheelForward, 120, 120)
-	end)
+		replicatesignal(Instance.new("Frame").MouseWheelForward, 120, 120);
+	end);
 	local Success2, Error2 = pcall(function()
-		replicatesignal(Instance.new("Frame"))
-	end)
-
-	if Success1 and not Success2 then
-		ExecutorSupport["replicatesignal"] = true
+		replicatesignal(Instance.new("Frame"));
+	end);
+	if (Success1 and not Success2) then
+		ExecutorSupport['replicatesignal'] = true;
 	end
 end
-
-
-
 local function TestFunction()
-	return "not hooked"
+	return "not hooked";
 end
-
 local function TestHook()
-	return "hooked"
+	return "hooked";
 end
-
 if hookfunction then
 	local Success, Error = pcall(function()
-		hookfunction(TestFunction, TestHook)
-	end)
-
-	if Success and TestFunction() == "hooked" then
-		ExecutorSupport["hookfunction"] = true
+		hookfunction(TestFunction, TestHook);
+	end);
+	if (Success and (TestFunction() == "hooked")) then
+		ExecutorSupport['hookfunction'] = true;
 	end
-
 end
-
 if setfpscap then
 	local function GetFPS()
-		return math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+		return math.floor(1 / game:GetService("RunService").RenderStepped:Wait());
 	end
-
 	local Success1, Error1 = pcall(function()
-		setfpscap(4)
-	end)
-
-	game:GetService("RunService").RenderStepped:Wait()
-
-	if Success1 and GetFPS() <= 7 then
-		ExecutorSupport["setfpscap"] = true
-		setfpscap(0)
+		setfpscap(4);
+	end);
+	game:GetService("RunService").RenderStepped:Wait();
+	if (Success1 and (GetFPS() <= 7)) then
+		ExecutorSupport['setfpscap'] = true;
+		setfpscap(0);
 	end
-
-	if not ExecutorSupport["setfpscap"] then
+	if not ExecutorSupport['setfpscap'] then
 		local Success2, Error2 = pcall(function()
-			setfpscap(0)
-		end)
+			setfpscap(0);
+		end);
 	end
 end
-
 if getthreadidentity then
-	local ThreadIdentity = 0
-
+	local ThreadIdentity = 0;
 	local Success, Error = pcall(function()
-		ThreadIdentity = getthreadidentity()
-	end)
-	
-	local Test = true
-	
-	if getthreadidentity() > 2 and game:GetService("CoreGui") == nil then
-		Test = false
+		ThreadIdentity = getthreadidentity();
+	end);
+	local Test = true;
+	if ((getthreadidentity() > 2) and (game:GetService("CoreGui") == nil)) then
+		Test = false;
 	end
-	
-	if getthreadidentity() >= 8 then
+	if (getthreadidentity() >= 8) then
 		local Success, Error = pcall(function()
-			local OldID = Player.UserId
-			Player.UserId = 1
-			Player.UserId = OldID
-		end)
+			local OldID = Player.UserId;
+			Player.UserId = 1;
+			Player.UserId = OldID;
+		end);
 		if not Success then
-			Test = false
+			Test = false;
 		end
 	end
-
-
-	if Success and typeof(ThreadIdentity) == "number" and ThreadIdentity ~= 0 and Test == true then
-		ExecutorSupport["getthreadidentity"] = true
+	if (Success and (typeof(ThreadIdentity) == "number") and (ThreadIdentity ~= 0) and (Test == true)) then
+		ExecutorSupport['getthreadidentity'] = true;
 	end
 end
-
-if setthreadidentity and ExecutorSupport["getthreadidentity"] then
-	local ThreadIdentity = getthreadidentity()
-
+if (setthreadidentity and ExecutorSupport['getthreadidentity']) then
+	local ThreadIdentity = getthreadidentity();
 	local Success, Error = pcall(function()
-		setthreadidentity(1)
-	end)
-
-	if Success and typeof(ThreadIdentity) == "number" and getthreadidentity() == 1 and ThreadIdentity ~= 1 then
-		ExecutorSupport["setthreadidentity"] = true
+		setthreadidentity(1);
+	end);
+	if (Success and (typeof(ThreadIdentity) == "number") and (getthreadidentity() == 1) and (ThreadIdentity ~= 1)) then
+		ExecutorSupport['setthreadidentity'] = true;
 	end
-
 	if Success then
-		setthreadidentity(ThreadIdentity)
+		setthreadidentity(ThreadIdentity);
 	end
 end
-
 if clonefunction then
-	local ClonedFunction
+	local ClonedFunction;
 	local TestFunction = function()
-		return "ABYSALL_FUNCTION_TEST"
-	end
+		return "ABYSALL_FUNCTION_TEST";
+	end;
 	local Success, Error = pcall(function()
-		ClonedFunction = clonefunction(TestFunction)
-	end)
-
-	if Success and ClonedFunction() == "ABYSALL_FUNCTION_TEST" and ClonedFunction ~= TestFunction then
-		ExecutorSupport["clonefunction"] = true
+		ClonedFunction = clonefunction(TestFunction);
+	end);
+	if (Success and (ClonedFunction() == "ABYSALL_FUNCTION_TEST") and (ClonedFunction ~= TestFunction)) then
+		ExecutorSupport['clonefunction'] = true;
 	end
 end
-
 if cloneref then
-	local Clone
+	local Clone;
 	local Success, Error = pcall(function()
-		Clone = cloneref(workspace)
-	end)
-
-	if Success and Clone ~= workspace then
-		ExecutorSupport["cloneref"] = true
+		Clone = cloneref(workspace);
+	end);
+	if (Success and (Clone ~= workspace)) then
+		ExecutorSupport['cloneref'] = true;
 	end
 end
-
 if gethui then
-	if gethui() ~= nil and typeof(gethui()) == "Instance" and gethui() ~= game:GetService("CoreGui") and gethui().Parent ~= nil then
-		if gethui():IsA("CoreGui") or game:GetService("CoreGui") ~= nil and gethui():IsDescendantOf(game:GetService("CoreGui")) then
-			ExecutorSupport["gethui"] = true
+	if ((gethui() ~= nil) and (typeof(gethui()) == "Instance") and (gethui() ~= game:GetService("CoreGui")) and (gethui().Parent ~= nil)) then
+		if (gethui():IsA("CoreGui") or ((game:GetService("CoreGui") ~= nil) and gethui():IsDescendantOf(game:GetService("CoreGui")))) then
+			ExecutorSupport['gethui'] = true;
 		end
 	end
 end
-
-
 if loadstring then
-	local OldName = workspace.Name
+	local OldName = workspace.Name;
 	local Success, Error = pcall(function()
-		loadstring([[workspace.Name = "ABYSALL_WORKSPACE_TEST"]])()
-	end)
-	if Success and workspace.Name == "ABYSALL_WORKSPACE_TEST" then
-		workspace.Name = OldName
-		ExecutorSupport["loadstring"] = true
+		loadstring([[workspace.Name = "ABYSALL_WORKSPACE_TEST"]])();
+	end);
+	if (Success and (workspace.Name == "ABYSALL_WORKSPACE_TEST")) then
+		workspace.Name = OldName;
+		ExecutorSupport['loadstring'] = true;
 	end
 end
-
 if fireproximityprompt then
 	local Success, Error = pcall(function()
-		fireproximityprompt(NewPrompt)
-	end)
+		fireproximityprompt(NewPrompt);
+	end);
 end
-
 if fireclickdetector then
 	local Success, Error = pcall(function()
-		fireclickdetector(ClickDetector)
-	end)
+		fireclickdetector(ClickDetector);
+	end);
 end
-
 if firesignal then
 	local Success, Error = pcall(function()
-		firesignal(TestEvent.OnClientEvent)
-	end)
+		firesignal(TestEvent.OnClientEvent);
+	end);
 end
-
 if gethiddenproperty then
-	local Property
+	local Property;
 	local Success, Error = pcall(function()
-		Property = gethiddenproperty(NewPart, "Size")
-	end)
-	if Success and Property ~= nil then
-		if typeof(Property) == "Vector3" then
-			ExecutorSupport["gethiddenproperty"] = true
+		Property = gethiddenproperty(NewPart, "Size");
+	end);
+	if (Success and (Property ~= nil)) then
+		if (typeof(Property) == "Vector3") then
+			ExecutorSupport['gethiddenproperty'] = true;
 		end
 	end
 end
-
 if sethiddenproperty then
-	local OldSize = NewPart.Size
+	local OldSize = NewPart.Size;
 	local Success, Error = pcall(function()
-		sethiddenproperty(NewPart, "Size", Vector3.new(3,3,3))
-	end)
-	if Success and ExecutorSupport["gethiddenproperty"] then
-		local Property = gethiddenproperty(NewPart, "Size")
-		if typeof(Property) == "Vector3" and Property == Vector3.new(3,3,3) then
-			ExecutorSupport["sethiddenproperty"] = true
-			sethiddenproperty(NewPart, "Size", OldSize)
+		sethiddenproperty(NewPart, "Size", Vector3.new(3, 3, 3));
+	end);
+	if (Success and ExecutorSupport['gethiddenproperty']) then
+		local Property = gethiddenproperty(NewPart, "Size");
+		if ((typeof(Property) == "Vector3") and (Property == Vector3.new(3, 3, 3))) then
+			ExecutorSupport['sethiddenproperty'] = true;
+			sethiddenproperty(NewPart, "Size", OldSize);
 		end
 	end
 end
-
 if firetouchinterest then
 	local Success, Error = pcall(function()
-		task.wait()
-		firetouchinterest(NewPart, NewPart2, 1)
-		task.wait()
-		firetouchinterest(NewPart, NewPart2, 0)
-	end)
+		task.wait();
+		firetouchinterest(NewPart, NewPart2, 1);
+		task.wait();
+		firetouchinterest(NewPart, NewPart2, 0);
+	end);
 end
-
 if writefile then
 	local Success, Error = pcall(function()
-		writefile("ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
-	end)
+		writefile("ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS");
+	end);
 	if Success then
-		ExecutorSupport["writefile"] = true
+		ExecutorSupport['writefile'] = true;
 	end
-
 	if isfile then
 		local Success, Error = pcall(function()
-			isfile("ABYSALL_TEST_FILE")
-		end)
-		if Success and isfile("ABYSALL_TEST_FILE") then
-			ExecutorSupport["isfile"] = true
+			isfile("ABYSALL_TEST_FILE");
+		end);
+		if (Success and isfile("ABYSALL_TEST_FILE")) then
+			ExecutorSupport['isfile'] = true;
 		end
 	end
 end
-
 if readfile then
 	local Success, Error = pcall(function()
-		readfile("ABYSALL_TEST_FILE")
-	end)
-
-	if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS" then
-		ExecutorSupport["readfile"] = true
+		readfile("ABYSALL_TEST_FILE");
+	end);
+	if (Success and (readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS")) then
+		ExecutorSupport['readfile'] = true;
 	end
 end
-
 if listfiles then
 	local Success, Error = pcall(function()
-		listfiles("")
-	end)
-
-	if Success and typeof(listfiles("")) == "table" and #listfiles("") > 0 then
-		ExecutorSupport["listfiles"] = true
+		listfiles("");
+	end);
+	if (Success and (typeof(listfiles("")) == "table") and (#listfiles("") > 0)) then
+		ExecutorSupport['listfiles'] = true;
 	end
 end
-
 if makefolder then
 	local Success1, Error1 = pcall(function()
-		makefolder("ABYSALL_TEST_FOLDER")
-	end)
-
-	if Success1 and ExecutorSupport["writefile"] then
-		writefile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
+		makefolder("ABYSALL_TEST_FOLDER");
+	end);
+	if (Success1 and ExecutorSupport['writefile']) then
+		writefile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS");
 	end
-
-
 	if Success1 then
 		local Success2, Error2 = pcall(function()
-			readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
-		end)
-
-		if Success1 and Success2 then
-			ExecutorSupport["makefolder"] = true
+			readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE");
+		end);
+		if (Success1 and Success2) then
+			ExecutorSupport['makefolder'] = true;
 		end
 	end
 end
-
 if delfolder then
 	local Success1, Error1 = pcall(function()
-		delfolder("ABYSALL_TEST_FOLDER")
-	end)
-
+		delfolder("ABYSALL_TEST_FOLDER");
+	end);
 	if Success1 then
-
-
 		if Success1 then
-			ExecutorSupport["delfolder"] = true
+			ExecutorSupport['delfolder'] = true;
 		end
 	end
 end
-
-if appendfile and ExecutorSupport["readfile"] then
+if (appendfile and ExecutorSupport['readfile']) then
 	local Success, Error = pcall(function()
-		appendfile("ABYSALL_TEST_FILE", "_2")
-	end)
-
-	if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS_2" then
-		ExecutorSupport["appendfile"] = true
+		appendfile("ABYSALL_TEST_FILE", "_2");
+	end);
+	if (Success and (readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS_2")) then
+		ExecutorSupport['appendfile'] = true;
 	end
 end
-
-
-if delfile and ExecutorSupport["readfile"] then
+if (delfile and ExecutorSupport['readfile']) then
 	local Success1, Error1 = pcall(function()
-		delfile("ABYSALL_TEST_FILE")
-	end)
-
+		delfile("ABYSALL_TEST_FILE");
+	end);
 	if Success1 then
 		local Success2, Error2 = pcall(function()
-			readfile("ABYSALL_TEST_FILE")
-		end)
-
-		if Success1 and not Success2 then
-			ExecutorSupport["delfile"] = true
+			readfile("ABYSALL_TEST_FILE");
+		end);
+		if (Success1 and not Success2) then
+			ExecutorSupport['delfile'] = true;
 		end
 	end
 end
-
-
-
-
-
-
-CheckNewCClosure()
-CheckGetGC()
-CheckGetRawMetaTable()
-CheckSetReadOnly()
-CheckIsReadOnly()
-CheckDrawing()
-CheckQueueTeleport()
-CheckHookMetaMethod()
-CheckGetNameCallMethod()
-CheckRequire()
-
-task.wait()
-
-
-if ExecutorSupport["getgenv"] then
-	getgenv().ExecutorSupport = ExecutorSupport
+CheckNewCClosure();
+CheckGetGC();
+CheckGetRawMetaTable();
+CheckSetReadOnly();
+CheckIsReadOnly();
+CheckDrawing();
+CheckQueueTeleport();
+CheckHookMetaMethod();
+CheckGetNameCallMethod();
+CheckRequire();
+task.wait();
+if ExecutorSupport['getgenv'] then
+	getgenv().ExecutorSupport = ExecutorSupport;
 end
-
-NewPart:Destroy()
-NewPart2:Destroy()
-NewPart3:Destroy()
-TestEvent:Destroy()
-
-local Successes = 0
-local TotalTests = 0
-
-local ExistingFunctions = {
-	["getgenv"] = getgenv,
-	["identifyexecutor"] = identifyexecutor,
-	["writefile"] = writefile,
-	["isfile"] = isfile,
-	["readfile"] = readfile,
-	["listfiles"] = listfiles,
-	["delfile"] = delfile,
-	["appendfile"] = appendfile,
-	["makefolder"] = makefolder,
-	["delfolder"] = delfolder,
-	["fireproximityprompt"] = fireproximityprompt,
-	["require"] = require,
-	["hookmetamethod"] = hookmetamethod,
-	["isnetworkowner"] = isnetworkowner,
-	["cloneref"] = cloneref,
-	["gethui"] = gethui,
-	["newcclosure"] = newcclosure,
-	["firetouchinterest"] = firetouchinterest,
-	["replicatesignal"] = replicatesignal,
-	["getnamecallmethod"] = getnamecallmethod,
-	["hookfunction"] = hookfunction,
-	["getrawmetatable"] = getrawmetatable,
-	["setreadonly"] = setreadonly,
-	["isreadonly"] = isreadonly,
-	["toclipboard"] = toclipboard,
-	["Drawing.new"] = (Drawing and Drawing.new),
-	["Drawing.Fonts"] = (Drawing and Drawing.Fonts),
-	["queue_on_teleport"] = queue_on_teleport,
-	["firesignal"] = firesignal,
-	["gethiddenproperty"] = gethiddenproperty,
-	["sethiddenproperty"] = sethiddenproperty,
-	["getgc"] = getgc,
-	["loadstring"] = loadstring,
-	["fireclickdetector"] = fireclickdetector,
-	["getnilinstances"] = getnilinstances,
-	["setfpscap"] = setfpscap,
-	["getthreadidentity"] = getthreadidentity,
-	["setthreadidentity"] = setthreadidentity,
-}
-
+NewPart:Destroy();
+NewPart2:Destroy();
+NewPart3:Destroy();
+TestEvent:Destroy();
+local Successes = 0;
+local TotalTests = 0;
+local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,getrawmetatable=getrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
 for Name, Result in pairs(ExecutorSupport) do
-	TotalTests = TotalTests + 1
-	if Result == true then
-		ConsoleMessage = ConsoleMessage .. "[✅] " .. Name .. "\n"
+	TotalTests = TotalTests + 1;
+	if (Result == true) then
+		ConsoleMessage = ConsoleMessage .. "[✅] " .. Name .. "\n";
+	elseif (ExistingFunctions[Name] ~= nil) then
+		ConsoleMessage = ConsoleMessage .. "[⚠️] " .. Name .. "\n";
 	else
-		if ExistingFunctions[Name] ~= nil then
-			ConsoleMessage = ConsoleMessage .. "[⚠️] " .. Name .. "\n"
-
-		else
-			ConsoleMessage = ConsoleMessage .. "[⛔] " .. Name .. "\n"
-		end
+		ConsoleMessage = ConsoleMessage .. "[⛔] " .. Name .. "\n";
 	end
-	if Result == true then
-		Successes = Successes + 1
+	if (Result == true) then
+		Successes = Successes + 1;
 	end
 end
-
-ConsoleMessage = ConsoleMessage .. "\nExecutor: " .. (ExecutorSupport["identifyexecutor"] and identifyexecutor() or "nil (failed identifyexecutor() test)")
-ConsoleMessage = ConsoleMessage .. "\nTime taken: " .. math.floor(tonumber(tick() - Time)*1000)/1000 .. " seconds"
-
-local FinalScore = math.round((Successes / TotalTests) * 100)
-ConsoleMessage = ConsoleMessage .. "\nScore: " .. FinalScore .. "%"
-print(ConsoleMessage)
+ConsoleMessage = ConsoleMessage .. "\nExecutor: " .. ((ExecutorSupport['identifyexecutor'] and identifyexecutor()) or "nil (failed identifyexecutor() test)");
+ConsoleMessage = ConsoleMessage .. "\nTime taken: " .. (math.floor(tonumber(tick() - Time) * 1000) / 1000) .. " seconds";
+local FinalScore = math.round((Successes / TotalTests) * 100);
+ConsoleMessage = ConsoleMessage .. "\nScore: " .. FinalScore .. "%";
+print(ConsoleMessage);
