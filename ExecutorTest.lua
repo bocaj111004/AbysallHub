@@ -28,10 +28,11 @@ if getgenv then
 			if (getgenv().ABYSALL_GENV_TEST == "ABYSALL_GENV_TEST_VALUE") then
 				Test1 = true;
 			end
-			getgenv().ABYSALL_GENV_TEST = nil;
-			if (getgenv().ABYSALL_GENV_TEST == nil) then
+			
+			if (ABYSALL_GENV_TEST and ABYSALL_GENV_TEST  == "ABYSALL_GENV_TEST_VALUE") then
 				Test2 = true;
 			end
+			getgenv().ABYSALL_GENV_TEST = nil;
 		end
 	end);
 	if (Success and (Test1 == true) and (Test2 == true)) then
