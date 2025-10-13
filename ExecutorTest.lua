@@ -18,7 +18,7 @@ local ConsoleMessage = [[
 Starting Executor Test...   
 
 ]];
-local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,getrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
+local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,getrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
 if getgenv then
 	local Test1 = false;
 	local Test2 = false;
@@ -545,6 +545,17 @@ if makefolder then
 		end
 	end
 end
+if isfolder then
+	local FolderValue = false
+	local Success1, Error1 = pcall(function()
+		FolderValue = isfolder("ABYSALL_TEST_FOLDER");
+	end);
+	if Success1 then
+		if isfolder("ABYSALL_TEST_FILE") == false then
+			ExecutorSupport['isfolder'] = true;
+		end
+	end
+end
 if delfolder then
 	local Success1, Error1 = pcall(function()
 		delfolder("ABYSALL_TEST_FOLDER");
@@ -596,7 +607,7 @@ NewPart3:Destroy();
 TestEvent:Destroy();
 local Successes = 0;
 local TotalTests = 0;
-local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,getrawmetatable=getrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
+local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,getrawmetatable=getrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
 for Name, Result in pairs(ExecutorSupport) do
 	TotalTests = TotalTests + 1;
 	if (Result == true) then
