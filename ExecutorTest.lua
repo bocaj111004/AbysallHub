@@ -365,7 +365,7 @@ if setfpscap then
 	local Success1, Error1 = pcall(function()
 		setfpscap(4);
 	end);
-	game:GetService("RunService").RenderStepped:Wait();
+	task.wait(0.1)
 	if (Success1 and (GetFPS() <= 7)) then
 		ExecutorSupport['setfpscap'] = true;
 		setfpscap(0);
