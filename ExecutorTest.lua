@@ -11,10 +11,10 @@ local ConsoleMessage = [[
 | $$  | $$| $$$$$$$/    | $$   |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$
 |__/  |__/|_______/     |__/    \______/ |__/  |__/|________/|________/
                                                                        
-[✅] - Function is fully working
-[⚠️] - Function is defined, but might be faked or only partially work
-[⛔] - Function is undefined
-[⏺️] - Function was not tested, possibly to avoid game detections
+[✅] - Function is fully working.
+[⚠️] - Function is defined, but might be faulty or faked.
+[⛔] - Function is not defined.
+[⏺️] - Function was not tested, possibly to avoid game detections.
 
 Starting Executor Test...   
 
@@ -45,6 +45,7 @@ local ExecutorSupport = {
 	["hookfunction"] = false,
 	["getrawmetatable"] = false,
 	["setreadonly"] = false,
+	["isreadonly"] = false,
 	["toclipboard"] = false,
 	["Drawing.new"] = false,
 	["Drawing.Fonts"] = false,
@@ -72,12 +73,17 @@ if identifyexecutor then
 end
 
 if toclipboard then
-	ExecutorSupport["toclipboard"] = true
+	local Success, Error = pcall(function()
+		toclipboard("ABYSALL_CLIPBOARD_TEST")
+	end)
+	if Success then
+		ExecutorSupport["toclipboard"] = true
+	end
 end
 
 
 
-local Player = game.Players.LocalPlayer
+local Player = game:GetService("Players").LocalPlayer
 local NewPart = Instance.new("Part")
 NewPart.Transparency = 1
 NewPart.Size = Vector3.new(100,100,100)
@@ -190,8 +196,12 @@ function CheckRequire()
 
 		for i,v in pairs(getgc(true)) do
 			if type(v) == 'table' then
-				ExecutorSupport["getgc"] = true
 				ExecutorSupport["require"] = true
+				for i,v in pairs(getgc(false)) do
+					if type(v) ~= 'table' then		
+						ExecutorSupport["getgc"] = true
+					end
+				end
 			end
 		end
 	end
@@ -200,453 +210,480 @@ end
 
 
 
-function CheckGetNameCallMethod()
-	if not ExecutorSupport["hookmetamethod"] or not getnamecallmethod then
-		return
-	end
-	local method
-	local ref
-	ref = hookmetamethod(game, "__namecall", function(...)
-		if not method then
-
-			method = getnamecallmethod()
-
+	function CheckGetNameCallMethod()
+		if not ExecutorSupport["hookmetamethod"] or not getnamecallmethod then
+			return
 		end
-		return ref(...)
-	end)
-	game:GetService("Lighting")
-	if method == "GetService" then
-		ExecutorSupport["getnamecallmethod"] = true
-	end
+		local method
+		local ref
+		ref = hookmetamethod(game, "__namecall", function(...)
+			if not method then
 
-end
+				method = getnamecallmethod()
 
-function CheckGetRawMetaTable()
-	if getrawmetatable then
-		local metatable = { __metatable = "ABYSALL_METATABLE_TEST" }
-		local object = setmetatable({}, metatable)
-		local Success, Error = pcall(function()
-
-			getrawmetatable(object)
+			end
+			return ref(...)
 		end)
-		if Success and getrawmetatable(object) == metatable then
-			ExecutorSupport["getrawmetatable"] = true
+		game:GetService("Lighting")
+		if method == "GetService" then
+			ExecutorSupport["getnamecallmethod"] = true
 		end
 
 	end
 
-end
+	function CheckGetRawMetaTable()
+		if getrawmetatable then
+			local metatable = { __metatable = "ABYSALL_METATABLE_TEST" }
+			local object = setmetatable({}, metatable)
+			local Success, Error = pcall(function()
 
-function CheckSetReadOnly()
-	if setreadonly then
-		local object = { success = false }
-		table.freeze(object)
-		setreadonly(object, false)
+				getrawmetatable(object)
+			end)
+			if Success and getrawmetatable(object) == metatable then
+				ExecutorSupport["getrawmetatable"] = true
+			end
 
-		local Success, Error = pcall(function()
-			object.success = true
-		end)
-		if Success then
-			ExecutorSupport["setreadonly"] = true
 		end
 
 	end
-end
 
-function CheckQueueTeleport()
-	local TestCode = [[
+	function CheckSetReadOnly()
+		if setreadonly then
+			local object = { success = false }
+			table.freeze(object)
+			setreadonly(object, false)
+
+			local Success, Error = pcall(function()
+				object.success = true
+			end)
+			if Success then
+				ExecutorSupport["setreadonly"] = true
+			end
+
+		end
+	end
+
+	function CheckIsReadOnly()
+		if isreadonly then
+			local Test1 =false
+			local Test2 = false
+
+			local object = { success = false }
+			local Success1, Error1 = pcall(function()
+				if isreadonly(object) == false then
+					Test1 = true
+				end
+			end)
+			table.freeze(object)
+
+			local Success2, Error2 = pcall(function()
+				if isreadonly(object) == true then
+					Test2 = true
+				end
+			end)
+			if Success1 and Success2 and Test1 == true and Test2 == true then
+				ExecutorSupport["isreadonly"] = true
+			end
+
+		end
+	end
+
+	function CheckQueueTeleport()
+		local TestCode = [[
 			warn("test")
 			]]
-	if queue_on_teleport then
+		if queue_on_teleport then
+			local Success, Error = pcall(function()
+				queue_on_teleport(TestCode)
+			end)
+			if Success then
+				ExecutorSupport["queue_on_teleport"] = true
+			end
+
+		end
+	end
+
+	if getnilinstances then
+		local FirstInstance
 		local Success, Error = pcall(function()
-			queue_on_teleport(TestCode)
+			FirstInstance = getnilinstances()[1]
+		end)
+		if Success and FirstInstance and typeof(FirstInstance) == "Instance" and FirstInstance.Parent == nil then
+			ExecutorSupport["getnilinstances"] = true
+		end
+	end
+
+	if isnetworkowner then
+		local NetworkValue1 = false
+		local NetworkValue2 = false
+
+		local Success1, Error1 = pcall(function()
+			NetworkValue1 = isnetworkowner(NewPart)
+		end)
+		local Success2, Error2 = pcall(function()
+			NetworkValue2 = isnetworkowner(Instance.new("Model"))
+		end)
+
+		if Success1 and NetworkValue1 == true and NetworkValue2 == false then
+			local Test1 = false
+			local Test2 = false
+			local Test3 = false
+
+			local Success3, Error3 = pcall(function()
+				if isnetworkowner(Instance.new("Part", workspace)) == true then
+					Test1 = true
+				end
+
+				if isnetworkowner(Instance.new("Part")) ~= true then
+					Test2 = true
+				end
+
+				if isnetworkowner(NewPart) == true then
+					Test3 = true
+				end
+			end)
+
+			if Success3 and Test1 == true and Test2 == true and Test3 == true then
+				ExecutorSupport["isnetworkowner"] = true
+			end
+
+		end
+	end
+
+
+	if replicatesignal then
+		local y,n = pcall(function()
+			replicatesignal(ClickDetector.MouseActionReplicated, Player, 0)
+		end)
+		if y == true then
+			ExecutorSupport["replicatesignal"] = true
+		end
+	end
+
+	local function TestFunction()
+		return "not hooked"
+	end
+
+	local function TestHook()
+		return "hooked"
+	end
+
+	if hookfunction then
+		local Success, Error = pcall(function()
+			hookfunction(TestFunction, TestHook)
+		end)
+
+		if Success and TestFunction() == "hooked" then
+			ExecutorSupport["hookfunction"] = true
+		end
+
+	end
+
+	if setfpscap then
+		local function GetFPS()
+			return math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+		end
+
+		local Success1, Error1 = pcall(function()
+			setfpscap(4)
+		end)
+
+		task.wait(0.15)
+
+		if Success1 and GetFPS() <= 7 then
+			ExecutorSupport["setfpscap"] = true
+			setfpscap(0)
+		end
+
+		if not ExecutorSupport["setfpscap"] then
+			local Success2, Error2 = pcall(function()
+				setfpscap(0)
+			end)
+		end
+	end
+
+	if clonefunction then
+		local ClonedFunction
+		local TestFunction = function()
+			return "ABYSALL_FUNCTION_TEST"
+		end
+		local Success, Error = pcall(function()
+			ClonedFunction = clonefunction(TestFunction)
+		end)
+
+		if Success and ClonedFunction() == "ABYSALL_FUNCTION_TEST" and ClonedFunction ~= TestFunction then
+			ExecutorSupport["clonefunction"] = true
+		end
+	end
+
+	if cloneref then
+		local Clone
+		local Success, Error = pcall(function()
+			Clone = cloneref(workspace)
+		end)
+
+		if Success and Clone ~= workspace then
+			ExecutorSupport["cloneref"] = true
+		end
+	end
+
+	if gethui then
+		if gethui() ~= nil and typeof(gethui()) == "Instance" and gethui() ~= game.CoreGui then
+			ExecutorSupport["gethui"] = true
+		end
+	end
+
+
+	if loadstring then
+		local OldName = workspace.Name
+		local Success, Error = pcall(function()
+			loadstring([[workspace.Name = "ABYSALL_WORKSPACE_TEST"]])()
+		end)
+		if Success and workspace.Name == "ABYSALL_WORKSPACE_TEST" then
+			workspace.Name = OldName
+			ExecutorSupport["loadstring"] = true
+		end
+	end
+
+	if fireproximityprompt then
+		local Success, Error = pcall(function()
+			fireproximityprompt(NewPrompt)
+		end)
+	end
+
+	if fireclickdetector then
+		local Success, Error = pcall(function()
+			fireclickdetector(ClickDetector)
+		end)
+	end
+
+	if firesignal then
+		local Success, Error = pcall(function()
+			firesignal(TestEvent.OnClientEvent)
+		end)
+	end
+
+	if gethiddenproperty then
+		local Property
+		local Success, Error = pcall(function()
+			Property = gethiddenproperty(NewPart, "Size")
+		end)
+		if Success and Property ~= nil then
+			if typeof(Property) == "Vector3" then
+				ExecutorSupport["gethiddenproperty"] = true
+			end
+		end
+	end
+
+	if sethiddenproperty then
+		local OldSize = NewPart.Size
+		local Success, Error = pcall(function()
+			sethiddenproperty(NewPart, "Size", Vector3.new(3,3,3))
+		end)
+		if Success and ExecutorSupport["gethiddenproperty"] then
+			local Property = gethiddenproperty(NewPart, "Size")
+			if typeof(Property) == "Vector3" and Property == Vector3.new(3,3,3) then
+				ExecutorSupport["sethiddenproperty"] = true
+				sethiddenproperty(NewPart, "Size", OldSize)
+			end
+		end
+	end
+
+	if firetouchinterest then
+		local Success, Error = pcall(function()
+			task.wait(0.05)
+			firetouchinterest(NewPart, NewPart2, 1)
+			task.wait(0.05)
+			firetouchinterest(NewPart, NewPart2, 0)
+		end)
+	end
+
+	if writefile then
+		local Success, Error = pcall(function()
+			writefile("ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
 		end)
 		if Success then
-			ExecutorSupport["queue_on_teleport"] = true
+			ExecutorSupport["writefile"] = true
 		end
 
-	end
-end
-
-if getnilinstances then
-	local FirstInstance
-	local Success, Error = pcall(function()
-		FirstInstance = getnilinstances()[1]
-	end)
-	if Success and FirstInstance and typeof(FirstInstance) == "Instance" and FirstInstance.Parent == nil then
-		ExecutorSupport["getnilinstances"] = true
-	end
-end
-
-if isnetworkowner then
-	local NetworkValue1 = false
-	local NetworkValue2 = false
-	
-	local Success1, Error1 = pcall(function()
-		NetworkValue1 = isnetworkowner(NewPart)
-	end)
-	local Success2, Error2 = pcall(function()
-		NetworkValue2 = isnetworkowner(Instance.new("Model"))
-	end)
-	
-	if Success1 and NetworkValue1 == true and NetworkValue2 == false then
-	local Test1 = false
-	local Test2 = false
-	local Test3 = false
-	
-local Success3, Error3 = pcall(function()
-	if isnetworkowner(Instance.new("Part", workspace)) == true then
-		Test1 = true
-	end
-
-	if isnetworkowner(Instance.new("Part")) ~= true then
-		Test2 = true
-	end
-
-	if isnetworkowner(NewPart) == true then
-		Test3 = true
-	end
-end)
-
-if Success3 and Test1 == true and Test2 == true and Test3 == true then
-	ExecutorSupport["isnetworkowner"] = true
-end
-
-end
-end
-
-
-if replicatesignal then
-	local y,n = pcall(function()
-		replicatesignal(ClickDetector.MouseActionReplicated, Player, 0)
-	end)
-	if y == true then
-		ExecutorSupport["replicatesignal"] = true
-	end
-end
-
-local function TestFunction()
-	return "not hooked"
-end
-
-local function TestHook()
-	return "hooked"
-end
-
-if hookfunction then
-	local Success, Error = pcall(function()
-		hookfunction(TestFunction, TestHook)
-	end)
-
-	if Success and TestFunction() == "hooked" then
-		ExecutorSupport["hookfunction"] = true
-	end
-
-end
-
-if setfpscap then
-	local function GetFPS()
-		return math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
-	end
-	
-	local Success1, Error1 = pcall(function()
-		setfpscap(4)
-	end)
-	
-	task.wait(0.15)
-	
-	if Success1 and GetFPS() <= 7 then
-		ExecutorSupport["setfpscap"] = true
-		setfpscap(0)
-	end
-	
-	if not ExecutorSupport["setfpscap"] then
-	local Success2, Error2 = pcall(function()
-	setfpscap(0)
-	end)
-	end
-end
-
-if clonefunction then
-	local ClonedFunction
-	local TestFunction = function()
-		return "ABYSALL_FUNCTION_TEST"
-	end
-	local Success, Error = pcall(function()
-		ClonedFunction = clonefunction(TestFunction)
-	end)
-	
-	if Success and ClonedFunction() == "ABYSALL_FUNCTION_TEST" and ClonedFunction ~= TestFunction then
-		ExecutorSupport["clonefunction"] = true
-	end
-end
-
-if cloneref then
-	local Clone
-	local Success, Error = pcall(function()
-		Clone = cloneref(workspace)
-	end)
-
-	if Success and Clone ~= workspace then
-		ExecutorSupport["cloneref"] = true
-	end
-end
-
-if gethui then
-	if gethui() ~= nil and typeof(gethui()) == "Instance" and gethui() ~= game.CoreGui then
-		ExecutorSupport["gethui"] = true
-	end
-end
-
-
-if loadstring then
-	local OldName = workspace.Name
-	local Success, Error = pcall(function()
-		loadstring([[workspace.Name = "ABYSALL_WORKSPACE_TEST"]])()
-	end)
-	if Success and workspace.Name == "ABYSALL_WORKSPACE_TEST" then
-		workspace.Name = OldName
-		ExecutorSupport["loadstring"] = true
-	end
-end
-
-if fireproximityprompt then
-	local Success, Error = pcall(function()
-		fireproximityprompt(NewPrompt)
-	end)
-end
-
-if fireclickdetector then
-	local Success, Error = pcall(function()
-		fireclickdetector(ClickDetector)
-	end)
-end
-
-if firesignal then
-	local Success, Error = pcall(function()
-		firesignal(TestEvent.OnClientEvent)
-	end)
-end
-
-if gethiddenproperty then
-	local Property
-	local Success, Error = pcall(function()
-		Property = gethiddenproperty(NewPart, "Size")
-	end)
-	if Success and Property ~= nil then
-		if typeof(Property) == "Vector3" then
-		ExecutorSupport["gethiddenproperty"] = true
+		if isfile then
+			local Success, Error = pcall(function()
+				isfile("ABYSALL_TEST_FILE")
+			end)
+			if Success and isfile("ABYSALL_TEST_FILE") then
+				ExecutorSupport["isfile"] = true
+			end
 		end
 	end
-end
 
-if sethiddenproperty then
-	local OldSize = NewPart.Size
-	local Success, Error = pcall(function()
-		sethiddenproperty(NewPart, "Size", Vector3.new(3,3,3))
-	end)
-	if Success and ExecutorSupport["gethiddenproperty"] then
-		local Property = gethiddenproperty(NewPart, "Size")
-		if typeof(Property) == "Vector3" and Property == Vector3.new(3,3,3) then
-			ExecutorSupport["sethiddenproperty"] = true
-			sethiddenproperty(NewPart, "Size", OldSize)
-		end
-	end
-end
-
-if firetouchinterest then
-	local Success, Error = pcall(function()
-		task.wait(0.05)
-		firetouchinterest(NewPart, NewPart2, 1)
-		task.wait(0.05)
-		firetouchinterest(NewPart, NewPart2, 0)
-	end)
-end
-
-if writefile then
-	local Success, Error = pcall(function()
-		writefile("ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
-	end)
-	if Success then
-		ExecutorSupport["writefile"] = true
-	end
-
-	if isfile then
+	if readfile then
 		local Success, Error = pcall(function()
-			isfile("ABYSALL_TEST_FILE")
-		end)
-		if Success and isfile("ABYSALL_TEST_FILE") then
-			ExecutorSupport["isfile"] = true
-		end
-	end
-end
-
-if readfile then
-	local Success, Error = pcall(function()
-		readfile("ABYSALL_TEST_FILE")
-	end)
-
-	if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS" then
-		ExecutorSupport["readfile"] = true
-	end
-end
-
-if listfiles then
-	local Success, Error = pcall(function()
-		listfiles("")
-	end)
-
-	if Success and typeof(listfiles("")) == "table" and #listfiles("") > 0 then
-		ExecutorSupport["listfiles"] = true
-	end
-end
-
-if makefolder then
-	local Success1, Error1 = pcall(function()
-		makefolder("ABYSALL_TEST_FOLDER")
-	end)
-
-	if Success1 and ExecutorSupport["writefile"] then
-		writefile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
-	end
-
-
-	if Success1 then
-		local Success2, Error2 = pcall(function()
-			readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
-		end)
-
-		if Success1 and Success2 then
-			ExecutorSupport["makefolder"] = true
-		end
-	end
-end
-
-if delfolder then
-	local Success1, Error1 = pcall(function()
-		delfolder("ABYSALL_TEST_FOLDER")
-	end)
-
-	if Success1 then
-
-
-		if Success1 then
-			ExecutorSupport["delfolder"] = true
-		end
-	end
-end
-
-if appendfile and ExecutorSupport["readfile"] then
-	local Success, Error = pcall(function()
-		appendfile("ABYSALL_TEST_FILE", "_2")
-	end)
-
-	if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS_2" then
-		ExecutorSupport["appendfile"] = true
-	end
-end
-
-
-if delfile and ExecutorSupport["readfile"] then
-	local Success1, Error1 = pcall(function()
-		delfile("ABYSALL_TEST_FILE")
-	end)
-
-	if Success1 then
-		local Success2, Error2 = pcall(function()
 			readfile("ABYSALL_TEST_FILE")
 		end)
 
-		if Success1 and not Success2 then
-			ExecutorSupport["delfile"] = true
+		if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS" then
+			ExecutorSupport["readfile"] = true
 		end
 	end
-end
+
+	if listfiles then
+		local Success, Error = pcall(function()
+			listfiles("")
+		end)
+
+		if Success and typeof(listfiles("")) == "table" and #listfiles("") > 0 then
+			ExecutorSupport["listfiles"] = true
+		end
+	end
+
+	if makefolder then
+		local Success1, Error1 = pcall(function()
+			makefolder("ABYSALL_TEST_FOLDER")
+		end)
+
+		if Success1 and ExecutorSupport["writefile"] then
+			writefile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE", "ABYSALL_FILE_CONTENTS")
+		end
+
+
+		if Success1 then
+			local Success2, Error2 = pcall(function()
+				readfile("ABYSALL_TEST_FOLDER/ABYSALL_TEST_FILE")
+			end)
+
+			if Success1 and Success2 then
+				ExecutorSupport["makefolder"] = true
+			end
+		end
+	end
+
+	if delfolder then
+		local Success1, Error1 = pcall(function()
+			delfolder("ABYSALL_TEST_FOLDER")
+		end)
+
+		if Success1 then
+
+
+			if Success1 then
+				ExecutorSupport["delfolder"] = true
+			end
+		end
+	end
+
+	if appendfile and ExecutorSupport["readfile"] then
+		local Success, Error = pcall(function()
+			appendfile("ABYSALL_TEST_FILE", "_2")
+		end)
+
+		if Success and readfile("ABYSALL_TEST_FILE") == "ABYSALL_FILE_CONTENTS_2" then
+			ExecutorSupport["appendfile"] = true
+		end
+	end
+
+
+	if delfile and ExecutorSupport["readfile"] then
+		local Success1, Error1 = pcall(function()
+			delfile("ABYSALL_TEST_FILE")
+		end)
+
+		if Success1 then
+			local Success2, Error2 = pcall(function()
+				readfile("ABYSALL_TEST_FILE")
+			end)
+
+			if Success1 and not Success2 then
+				ExecutorSupport["delfile"] = true
+			end
+		end
+	end
 
 
 
 
 
 
-CheckNewCClosure()
-CheckRequire()
-CheckGetRawMetaTable()
-CheckSetReadOnly()
-CheckDrawing()
-CheckQueueTeleport()
-CheckHookMetaMethod()
-CheckGetNameCallMethod()
+	CheckNewCClosure()
+	CheckRequire()
+	CheckGetRawMetaTable()
+	CheckSetReadOnly()
+	CheckIsReadOnly()
+	CheckDrawing()
+	CheckQueueTeleport()
+	CheckHookMetaMethod()
+	CheckGetNameCallMethod()
 
-task.wait(0.25)
+	task.wait(0.25)
 
 
-if ExecutorSupport["getgenv"] then
-	getgenv().ExecutorSupport = ExecutorSupport
-end
+	if ExecutorSupport["getgenv"] then
+		getgenv().ExecutorSupport = ExecutorSupport
+	end
 
-NewPart:Destroy()
-NewPart2:Destroy()
-NewPart3:Destroy()
-TestEvent:Destroy()
+	NewPart:Destroy()
+	NewPart2:Destroy()
+	NewPart3:Destroy()
+	TestEvent:Destroy()
 
-local Successes = 0
-local TotalTests = 0
+	local Successes = 0
+	local TotalTests = 0
 
-local ExistingFunctions = {
-	["getgenv"] = getgenv,
-	["identifyexecutor"] = identifyexecutor,
-	["writefile"] = writefile,
-	["isfile"] = isfile,
-	["readfile"] = readfile,
-	["listfiles"] = listfiles,
-	["delfile"] = delfile,
-	["appendfile"] = appendfile,
-	["makefolder"] = makefolder,
-	["delfolder"] = delfolder,
-	["fireproximityprompt"] = fireproximityprompt,
-	["require"] = require,
-	["hookmetamethod"] = hookmetamethod,
-	["isnetworkowner"] = isnetworkowner,
-	["cloneref"] = cloneref,
-	["gethui"] = gethui,
-	["newcclosure"] = newcclosure,
-	["firetouchinterest"] = firetouchinterest,
-	["replicatesignal"] = replicatesignal,
-	["getnamecallmethod"] = getnamecallmethod,
-	["hookfunction"] = hookfunction,
-	["getrawmetatable"] = getrawmetatable,
-	["setreadonly"] = setreadonly,
-	["toclipboard"] = toclipboard,
-	["Drawing.new"] = (Drawing and Drawing.new),
-	["Drawing.Fonts"] = (Drawing and Drawing.Fonts),
-	["queue_on_teleport"] = queue_on_teleport,
-	["firesignal"] = firesignal,
-	["gethiddenproperty"] = gethiddenproperty,
-	["sethiddenproperty"] = sethiddenproperty,
-	["getgc"] = getgc,
-	["loadstring"] = loadstring,
-	["fireclickdetector"] = fireclickdetector,
-	["getnilinstances"] = getnilinstances,
-	["setfpscap"] = setfpscap
-}
+	local ExistingFunctions = {
+		["getgenv"] = getgenv,
+		["identifyexecutor"] = identifyexecutor,
+		["writefile"] = writefile,
+		["isfile"] = isfile,
+		["readfile"] = readfile,
+		["listfiles"] = listfiles,
+		["delfile"] = delfile,
+		["appendfile"] = appendfile,
+		["makefolder"] = makefolder,
+		["delfolder"] = delfolder,
+		["fireproximityprompt"] = fireproximityprompt,
+		["require"] = require,
+		["hookmetamethod"] = hookmetamethod,
+		["isnetworkowner"] = isnetworkowner,
+		["cloneref"] = cloneref,
+		["gethui"] = gethui,
+		["newcclosure"] = newcclosure,
+		["firetouchinterest"] = firetouchinterest,
+		["replicatesignal"] = replicatesignal,
+		["getnamecallmethod"] = getnamecallmethod,
+		["hookfunction"] = hookfunction,
+		["getrawmetatable"] = getrawmetatable,
+		["setreadonly"] = setreadonly,
+		["isreadonly"] = isreadonly,
+		["toclipboard"] = toclipboard,
+		["Drawing.new"] = (Drawing and Drawing.new),
+		["Drawing.Fonts"] = (Drawing and Drawing.Fonts),
+		["queue_on_teleport"] = queue_on_teleport,
+		["firesignal"] = firesignal,
+		["gethiddenproperty"] = gethiddenproperty,
+		["sethiddenproperty"] = sethiddenproperty,
+		["getgc"] = getgc,
+		["loadstring"] = loadstring,
+		["fireclickdetector"] = fireclickdetector,
+		["getnilinstances"] = getnilinstances,
+		["setfpscap"] = setfpscap
+	}
 
-for Name, Result in pairs(ExecutorSupport) do
-	TotalTests = TotalTests + 1
-	if Result == true then
-		ConsoleMessage = ConsoleMessage .. "[✅] - " .. Name .. "\n"
-	else
-		if ExistingFunctions[Name] ~= nil then
-			ConsoleMessage = ConsoleMessage .. "[⚠️] - " .. Name .. "\n"
-
+	for Name, Result in pairs(ExecutorSupport) do
+		TotalTests = TotalTests + 1
+		if Result == true then
+			ConsoleMessage = ConsoleMessage .. "[✅] - " .. Name .. "\n"
 		else
-			ConsoleMessage = ConsoleMessage .. "[⛔] - " .. Name .. "\n"
+			if ExistingFunctions[Name] ~= nil then
+				ConsoleMessage = ConsoleMessage .. "[⚠️] - " .. Name .. "\n"
+
+			else
+				ConsoleMessage = ConsoleMessage .. "[⛔] - " .. Name .. "\n"
+			end
+		end
+		if Result == true then
+			Successes = Successes + 1
 		end
 	end
-	if Result == true then
-		Successes = Successes + 1
-	end
-end
 
-local FinalScore = math.round((Successes / TotalTests) * 100)
-ConsoleMessage = ConsoleMessage .. "\nFinal Score: " .. FinalScore .. "%"
-print(ConsoleMessage)
+	local FinalScore = math.round((Successes / TotalTests) * 100)
+	ConsoleMessage = ConsoleMessage .. "\nFinal Score: " .. FinalScore .. "%"
+	print(ConsoleMessage)
