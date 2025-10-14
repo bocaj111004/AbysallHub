@@ -10,15 +10,11 @@ local ConsoleMessage = [[
 | $$  | $$| $$$$$$$/    | $$   |  $$$$$$/| $$  | $$| $$$$$$$$| $$$$$$$$
 |__/  |__/|_______/     |__/    \______/ |__/  |__/|________/|________/
                                                                        
-[✅] Function is fully working
-[⚠️] Function is defined, but failed its test
-[⛔] Function is not defined
-[⏺️] Function was not tested, possibly to avoid game detections
 
 Starting Executor Test...   
 
 ]];
-local ExecutorSupport = {getgenv=false,getsenv=false,getrenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,request=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,isfunctionhooked=false,restorefunction=false,isexecutorclosure=false,getrawmetatable=false,setrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,getconnections=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
+local ExecutorSupport = {getgenv=false,getsenv=false,getrenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,request=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,getrunningscripts=false,getloadedmodules=false,hookfunction=false,isfunctionhooked=false,restorefunction=false,isexecutorclosure=false,getrawmetatable=false,setrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,getconnections=false,getscripthash=false,getscriptbytecode=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getinstances=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
 local SkippedFunctions = {};
 local Player = game:GetService("Players").LocalPlayer;
 if getgenv then
@@ -224,7 +220,7 @@ function CheckGetGC()
 	end
 end
 function CheckRequire()
-	local Module = Player.PlayerScripts:WaitForChild("PlayerModule");
+	local Module = Player.PlayerScripts.PlayerModule;
 	local Test = false;
 	local Success, Error = pcall(function()
 		local LoadedModule = require(Module);
@@ -332,6 +328,15 @@ function CheckQueueTeleport()
 		end
 	end
 end
+if getinstances then
+	local FirstInstance;
+	local Success, Error = pcall(function()
+		FirstInstance = getinstances()[1];
+	end);
+	if (Success and FirstInstance and (typeof(FirstInstance) == "Instance")) then
+		ExecutorSupport['getinstances'] = true;
+	end
+end
 if getnilinstances then
 	local FirstInstance;
 	local Success, Error = pcall(function()
@@ -341,7 +346,59 @@ if getnilinstances then
 		ExecutorSupport['getnilinstances'] = true;
 	end
 end
-if isnetworkowner then
+if getscripthash then
+	local Test = false
+	local Success, Error = pcall(function()
+		local TestScript = Player.PlayerScripts.PlayerScriptsLoader
+		local Hash = getscripthash(TestScript)
+		if typeof(Hash) == "string" then
+			Test = true
+		end
+	end)
+	if Success and Test == true then
+		ExecutorSupport["getscripthash"] = true
+	end
+end
+if getscriptbytecode then
+	local Test = false
+	local Success, Error = pcall(function()
+		local TestScript = Player.PlayerScripts.PlayerScriptsLoader
+		local Bytecode = getscriptbytecode(TestScript)
+		if typeof(Bytecode) == "string" then
+			Test = true
+		end
+	end)
+	if Success and Test == true then
+		ExecutorSupport["getscriptbytecode"] = true
+	end
+end
+if getrunningscripts then
+	local Test = false
+	local Success, Error = pcall(function()
+		local RunningScripts = getrunningscripts()
+		local TestScript = RunningScripts[1]
+		if typeof(TestScript) == "Instance" and string.find(TestScript.ClassName, "Script") then
+			Test = true
+		end
+	end)
+	if Success and Test == true then
+		ExecutorSupport["getrunningscripts"] = true
+	end
+end
+if getloadedmodules then
+	local Test = false
+	local Success, Error = pcall(function()
+		local LoadedModules = getloadedmodules()
+		local TestModule = LoadedModules[1]
+		if typeof(TestModule) == "Instance" and TestModule.ClassName == "ModuleScript" then
+			Test = true
+		end
+	end)
+	if Success and Test == true then
+		ExecutorSupport["getloadedmodules"] = true
+	end
+end
+	if isnetworkowner then
 	local NetworkValue1 = false;
 	local NetworkValue2 = false;
 	local Success1, Error1 = pcall(function()
@@ -374,14 +431,16 @@ if request then
 	local Test = false
 	local Success, Error = pcall(function()
 		local response = request({
-			Url = "http://httpbin.org/get",
+			Url = "https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/ExecutorTest.lua",
 			Method = "GET",
 		})
-
-		if response.Body then
+		if type(response) == "table" then
+		if type(response.Body) == "string" then
+		if response.StatusCode == 200 then
 			Test = true
 		end
-
+		end
+		end
 	end)
 	if Success and Test == true then
 		ExecutorSupport["request"] = true
@@ -732,13 +791,11 @@ NewPart3:Destroy();
 TestEvent:Destroy();
 local Successes = 0;
 local TotalTests = 0;
-local ExistingFunctions = {getgenv=getgenv,getsenv=getsenv,getrenv=getrenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,request=request,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,isfunctionhooked=isfunctionhooked,restorefunction=restorefunction,isexecutorclosure=isexecutorclosure,getrawmetatable=getrawmetatable,setrawmetatable=setrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,getconnections=getconnections,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
+local ExistingFunctions = {getgenv=getgenv,getsenv=getsenv,getrenv=getrenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,request=request,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,getrunningscripts=getrunningscripts,getloadedmodules=getloadedmodules,hookfunction=hookfunction,isfunctionhooked=isfunctionhooked,restorefunction=restorefunction,isexecutorclosure=isexecutorclosure,getrawmetatable=getrawmetatable,setrawmetatable=setrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,getconnections=getconnections,getscripthash=getscripthash,getscriptbytecode=getscriptbytecode,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getinstances=getinstances,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
 for Name, Result in pairs(ExecutorSupport) do
 	TotalTests = TotalTests + 1;
 	if (Result == true) then
 		ConsoleMessage = ConsoleMessage .. "[✅] " .. Name .. "\n";
-	elseif (ExistingFunctions[Name] ~= nil) then
-		ConsoleMessage = ConsoleMessage .. "[⚠️] " .. Name .. "\n";
 	elseif table.find(SkippedFunctions, Name) then
 		ConsoleMessage = ConsoleMessage .. "[⏺️] " .. Name .. "\n";
 	else
@@ -749,6 +806,7 @@ for Name, Result in pairs(ExecutorSupport) do
 	end
 end
 ConsoleMessage = ConsoleMessage .. "\nExecutor: " .. ((ExecutorSupport['identifyexecutor'] and identifyexecutor()) or "nil [failed identifyexecutor]");
+ConsoleMessage = ConsoleMessage .. "\nTests passed: " .. Successes .. "/" .. TotalTests
 ConsoleMessage = ConsoleMessage .. "\nTime taken: " .. (math.floor(tonumber(tick() - Time) * 1000) / 1000) .. " seconds";
 local FinalScore = math.round((Successes / TotalTests) * 100);
 ConsoleMessage = ConsoleMessage .. "\nScore: " .. FinalScore .. "%";
