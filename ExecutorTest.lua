@@ -18,8 +18,9 @@ local ConsoleMessage = [[
 Starting Executor Test...   
 
 ]];
-local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,getrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
+local ExecutorSupport = {getgenv=false,getsenv=false,getrenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,request=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,hookfunction=false,isfunctionhooked=false,restorefunction=false,isexecutorclosure=false,getrawmetatable=false,setrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,getconnections=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
 local SkippedFunctions = {};
+local Player = game:GetService("Players").LocalPlayer;
 if getgenv then
 	local Test1 = false;
 	local Test2 = false;
@@ -40,6 +41,28 @@ if getgenv then
 		ExecutorSupport['getgenv'] = true;
 	end
 end
+if getsenv then
+	local Test = false
+	local Success, Error = pcall(function()
+		if typeof(getsenv(Player.PlayerScripts.RbxCharacterSounds).error) == "function" then
+			Test = true
+		end
+	end)
+	if Success and Test == true then
+		ExecutorSupport["getsenv"] = true
+	end
+end
+if getrenv then
+	local Test = false
+	local Success, Error = pcall(function()
+		if getrenv().error then
+			Test = true
+		end
+	end)
+	if Success and Test == true then
+		ExecutorSupport["getrenv"] = true
+	end
+end
 if identifyexecutor then
 	if ((identifyexecutor() ~= nil) and (typeof(identifyexecutor()) == "string")) then
 		ExecutorSupport['identifyexecutor'] = true;
@@ -50,7 +73,6 @@ if toclipboard then
 		ExecutorSupport['toclipboard'] = true;
 	end
 end
-local Player = game:GetService("Players").LocalPlayer;
 local NewPart = Instance.new("Part");
 NewPart.Transparency = 1;
 NewPart.Size = Vector3.new(100, 100, 100);
@@ -250,6 +272,19 @@ function CheckGetRawMetaTable()
 		end
 	end
 end
+function CheckSetRawMetaTable()
+	if setrawmetatable and ExecutorSupport["getrawmetatable"] then
+		local metatable1 = {__metatable="ABYSALL_METATABLE_TEST_1"};
+		local metatable2 = {__metatable="ABYSALL_METATABLE_TEST_2"};
+		local object = setmetatable({}, metatable1);
+		local Success, Error = pcall(function()
+			setrawmetatable(object, metatable2);
+		end);
+		if (Success and (getrawmetatable(object) == metatable2)) then
+			ExecutorSupport['setrawmetatable'] = true;
+		end
+	end
+end
 function CheckSetReadOnly()
 	if setreadonly then
 		local object = {success=false};
@@ -335,6 +370,23 @@ if isnetworkowner then
 		end
 	end
 end
+if request then
+	local Test = false
+	local Success, Error = pcall(function()
+		local response = request({
+			Url = "http://httpbin.org/get",
+			Method = "GET",
+		})
+
+		if response.Body then
+			Test = true
+		end
+
+	end)
+	if Success and Test == true then
+		ExecutorSupport["request"] = true
+	end
+end
 if replicatesignal then
 	local Success1, Error1 = pcall(function()
 		replicatesignal(Instance.new("Frame").MouseWheelForward, 120, 120);
@@ -360,15 +412,54 @@ if hookfunction then
 		ExecutorSupport['hookfunction'] = true;
 	end
 end
+if isfunctionhooked then
+	local Test1 = false
+	local Test2 = false
+	local Success, Error = pcall(function()
+		if isfunctionhooked(TestFunction) then
+			Test1 = true
+		end
+		if not isfunctionhooked(Player.Kick) then
+			Test2 = true
+		end
+	end);
+	if (Success and (TestFunction() == "hooked")) then
+		ExecutorSupport['isfunctionhooked'] = true;
+	end
+end
+if restorefunction and ExecutorSupport["hookfunction"] then
+	local Success, Error = pcall(function()
+		restorefunction(TestFunction);
+	end);
+	if (Success and (TestFunction() == "not hooked")) then
+		ExecutorSupport['restorefunction'] = true;
+	end
+end
+if isexecutorclosure then
+	local Test1 = false
+	local Test2 = false
+	local Success, Error = pcall(function()
+		local Testfunction = function() end
+		if isexecutorclosure(TestFunction) then
+			Test1 = true;
+		end
+		if not isexecutorclosure(Player.Kick) then
+			Test2 = true;
+		end
+	end);
+	if (Success and Test1 == true and Test2 == true) then
+		ExecutorSupport['isexecutorclosure'] = true;
+	end
+end
 if setfpscap then
 	local function GetFPS()
 		return math.floor(1 / game:GetService("RunService").RenderStepped:Wait());
 	end
 	local Success1, Error1 = pcall(function()
-		setfpscap(4);
+		setfpscap(10);
 	end);
 	task.wait(0.1)
-	if (Success1 and (GetFPS() <= 7)) then
+	if (Success1 and (GetFPS() <= 15)) then
 		ExecutorSupport['setfpscap'] = true;
 		setfpscap(0);
 	end
@@ -466,27 +557,48 @@ if firesignal then
 		firesignal(TestEvent.OnClientEvent);
 	end);
 end
+if getconnections then
+	local Test1 = false
+	local Test2 = false
+	local Success, Error = pcall(function()
+		local TestPart = Instance.new("Part")
+		local TestConnection = TestPart.ChildAdded:Connect(function()
+			Test2 = true
+		end)
+        local Connections = getconnections(TestPart.ChildAdded);
+		if typeof(Connections) == "table" then
+			Test1 = true
+		end
+		for i,Connection in pairs(Connections) do
+			Connection:Fire()
+		end
+		TestConnection:Disconnect()
+	end);
+	if Success and Test1 == true and Test2 == true then
+		ExecutorSupport["getconnections"] = true
+	end
+end
 if gethiddenproperty then
 	local Property;
 	local Success, Error = pcall(function()
-		Property = gethiddenproperty(NewPart, "Size");
+		Property = gethiddenproperty(NewPart, "NetworkIsSleeping");
 	end);
 	if (Success and (Property ~= nil)) then
-		if (typeof(Property) == "Vector3") then
+		if (typeof(Property) == "boolean") and Property == false then
 			ExecutorSupport['gethiddenproperty'] = true;
 		end
 	end
 end
-if sethiddenproperty then
-	local OldSize = NewPart.Size;
+if sethiddenproperty and ExecutorSupport['gethiddenproperty'] then
+	local OldProperty = gethiddenproperty(NewPart, "NetworkIsSleeping");
 	local Success, Error = pcall(function()
-		sethiddenproperty(NewPart, "Size", Vector3.new(3, 3, 3));
+		sethiddenproperty(NewPart, "NetworkIsSleeping", true);
 	end);
-	if (Success and ExecutorSupport['gethiddenproperty']) then
-		local Property = gethiddenproperty(NewPart, "Size");
-		if ((typeof(Property) == "Vector3") and (Property == Vector3.new(3, 3, 3))) then
+	if (Success) then
+		local Property = gethiddenproperty(NewPart, "NetworkIsSleeping");
+		if ((typeof(Property) == "boolean") and (Property == true)) then
 			ExecutorSupport['sethiddenproperty'] = true;
-			sethiddenproperty(NewPart, "Size", OldSize);
+			sethiddenproperty(NewPart, "NetworkIsSleeping", OldProperty);
 		end
 	end
 end
@@ -602,6 +714,7 @@ end
 CheckNewCClosure();
 CheckGetGC();
 CheckGetRawMetaTable();
+CheckSetRawMetaTable();
 CheckSetReadOnly();
 CheckIsReadOnly();
 CheckDrawing();
@@ -619,7 +732,7 @@ NewPart3:Destroy();
 TestEvent:Destroy();
 local Successes = 0;
 local TotalTests = 0;
-local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,getrawmetatable=getrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
+local ExistingFunctions = {getgenv=getgenv,getsenv=getsenv,getrenv=getrenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,request=request,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,hookfunction=hookfunction,isfunctionhooked=isfunctionhooked,restorefunction=restorefunction,isexecutorclosure=isexecutorclosure,getrawmetatable=getrawmetatable,setrawmetatable=setrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,getconnections=getconnections,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
 for Name, Result in pairs(ExecutorSupport) do
 	TotalTests = TotalTests + 1;
 	if (Result == true) then
