@@ -569,14 +569,15 @@ if gethui then
 		end
 	end
 end
+local LoadstringPassed = false
+local OldWorkspaceName = workspace.Name
 if loadstring then
 	local OldName = workspace.Name;
 	local Success, Error = pcall(function()
-		loadstring([[workspace.Name = "ABYSALL_WORKSPACE_TEST"]])();
+		loadstring([[workspace.Name = "ABYSALL_LOADSTRING_TEST"]])();
 	end);
-	if (Success and (workspace.Name == "ABYSALL_WORKSPACE_TEST")) then
-		workspace.Name = OldName;
-		ExecutorSupport['loadstring'] = true;
+	if Success then
+		LoadstringPassed = true
 	end
 end
 if fireproximityprompt then
@@ -759,6 +760,10 @@ CheckGetNameCallMethod();
 CheckRequire();
 if GetConnectionsPassed == true then
 	ExecutorSupport["getconnections"] = true
+end
+if workspace.Name == "ABYSALL_LOADSTRING_TEST" and LoadstringPassed == true then
+	workspace.Name = OldWorkspaceName;
+	ExecutorSupport['loadstring'] = true;
 end
 task.wait();
 if ExecutorSupport['getgenv'] then
