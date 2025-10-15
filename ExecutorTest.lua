@@ -14,7 +14,7 @@ local ConsoleMessage = [[
 Starting Executor Test...   
 
 ]];
-local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,request=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,getrunningscripts=false,getloadedmodules=false,hookfunction=false,isfunctionhooked=false,restorefunction=false,isexecutorclosure=false,getrawmetatable=false,setrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,getconnections=false,getscripthash=false,getscriptbytecode=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,loadstring=false,fireclickdetector=false,getinstances=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
+local ExecutorSupport = {getgenv=false,identifyexecutor=false,writefile=false,isfile=false,readfile=false,loadfile=false,listfiles=false,delfile=false,appendfile=false,makefolder=false,isfolder=false,delfolder=false,fireproximityprompt=false,require=false,hookmetamethod=false,isnetworkowner=false,request=false,cloneref=false,gethui=false,newcclosure=false,firetouchinterest=false,replicatesignal=false,getnamecallmethod=false,getrunningscripts=false,getloadedmodules=false,hookfunction=false,isfunctionhooked=false,restorefunction=false,isexecutorclosure=false,getrawmetatable=false,setrawmetatable=false,setreadonly=false,isreadonly=false,toclipboard=false,["Drawing.new"]=false,["Drawing.Fonts"]=false,queue_on_teleport=false,firesignal=false,getconnections=false,getscripthash=false,getscriptbytecode=false,gethiddenproperty=false,sethiddenproperty=false,getgc=false,fireclickdetector=false,getinstances=false,getnilinstances=false,setfpscap=false,setthreadidentity=false,getthreadidentity=false};
 local SkippedFunctions = {};
 local Player = game:GetService("Players").LocalPlayer;
 if getgenv then
@@ -569,17 +569,6 @@ if gethui then
 		end
 	end
 end
-local LoadstringPassed = false
-local OldWorkspaceName = workspace.Name
-if loadstring then
-	local OldName = workspace.Name;
-	local Success, Error = pcall(function()
-		loadstring([[workspace.Name = "ABYSALL_LOADSTRING_TEST"]])();
-	end);
-	if Success then
-		LoadstringPassed = true
-	end
-end
 if fireproximityprompt then
 	local Success, Error = pcall(function()
 		fireproximityprompt(NewPrompt);
@@ -761,10 +750,6 @@ CheckRequire();
 if GetConnectionsPassed == true then
 	ExecutorSupport["getconnections"] = true
 end
-if workspace.Name == "ABYSALL_LOADSTRING_TEST" and LoadstringPassed == true then
-	workspace.Name = OldWorkspaceName;
-	ExecutorSupport['loadstring'] = true;
-end
 task.wait();
 if ExecutorSupport['getgenv'] then
 	getgenv().ExecutorSupport = ExecutorSupport;
@@ -775,7 +760,7 @@ NewPart3:Destroy();
 TestEvent:Destroy();
 local Successes = 0;
 local TotalTests = 0;
-local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,request=request,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,getrunningscripts=getrunningscripts,getloadedmodules=getloadedmodules,hookfunction=hookfunction,isfunctionhooked=isfunctionhooked,restorefunction=restorefunction,isexecutorclosure=isexecutorclosure,getrawmetatable=getrawmetatable,setrawmetatable=setrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,getconnections=getconnections,getscripthash=getscripthash,getscriptbytecode=getscriptbytecode,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,loadstring=loadstring,fireclickdetector=fireclickdetector,getinstances=getinstances,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
+local ExistingFunctions = {getgenv=getgenv,identifyexecutor=identifyexecutor,writefile=writefile,isfile=isfile,readfile=readfile,loadfile=loadfile,listfiles=listfiles,delfile=delfile,appendfile=appendfile,makefolder=makefolder,isfolder=isfolder,delfolder=delfolder,fireproximityprompt=fireproximityprompt,require=require,hookmetamethod=hookmetamethod,isnetworkowner=isnetworkowner,request=request,cloneref=cloneref,gethui=gethui,newcclosure=newcclosure,firetouchinterest=firetouchinterest,replicatesignal=replicatesignal,getnamecallmethod=getnamecallmethod,getrunningscripts=getrunningscripts,getloadedmodules=getloadedmodules,hookfunction=hookfunction,isfunctionhooked=isfunctionhooked,restorefunction=restorefunction,isexecutorclosure=isexecutorclosure,getrawmetatable=getrawmetatable,setrawmetatable=setrawmetatable,setreadonly=setreadonly,isreadonly=isreadonly,toclipboard=toclipboard,["Drawing.new"]=(Drawing and Drawing.new),["Drawing.Fonts"]=(Drawing and Drawing.Fonts),queue_on_teleport=queue_on_teleport,firesignal=firesignal,getconnections=getconnections,getscripthash=getscripthash,getscriptbytecode=getscriptbytecode,gethiddenproperty=gethiddenproperty,sethiddenproperty=sethiddenproperty,getgc=getgc,fireclickdetector=fireclickdetector,getinstances=getinstances,getnilinstances=getnilinstances,setfpscap=setfpscap,getthreadidentity=getthreadidentity,setthreadidentity=setthreadidentity};
 for Name, Result in pairs(ExecutorSupport) do
 	TotalTests = TotalTests + 1;
 	if (Result == true) then
