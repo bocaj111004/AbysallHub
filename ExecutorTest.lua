@@ -789,7 +789,7 @@ for Name, Result in pairs(ExecutorSupport) do
 		Successes = Successes + 1;
 	end
 end
-ConsoleMessage = ConsoleMessage .. "\nExecutor: " .. ((ExecutorSupport['identifyexecutor'] and identifyexecutor()) or "nil [failed identifyexecutor]");
+ConsoleMessage = ConsoleMessage .. "\nExecutor: " .. ((ExecutorSupport['identifyexecutor'] and identifyexecutor()) or "N/A");
 ConsoleMessage = ConsoleMessage .. "\nTests passed: " .. Successes .. "/" .. TotalTests
 ConsoleMessage = ConsoleMessage .. "\nTime taken: " .. (math.floor(tonumber(tick() - Time) * 1000) / 1000) .. " seconds";
 local FinalScore = math.round((Successes / TotalTests) * 100);
