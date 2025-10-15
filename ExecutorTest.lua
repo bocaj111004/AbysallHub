@@ -594,13 +594,14 @@ if firesignal then
 		firesignal(TestEvent.OnClientEvent);
 	end);
 end
+local GetConnectionsPassed = false
 if getconnections then
 	local Test1 = false
 	local Test2 = false
 	local Success, Error = pcall(function()
-		local TestPart = Instance.new("Part")
+		local TestPart = Instance.new("Part", workspace)
 		local TestConnection = TestPart.ChildAdded:Connect(function()
-			Test2 = true
+			GetConnectionsPassed = true
 		end)
         local Connections = getconnections(TestPart.ChildAdded);
 		if typeof(Connections) == "table" then
@@ -611,9 +612,6 @@ if getconnections then
 		end
 		TestConnection:Disconnect()
 	end);
-	if Success and Test1 == true and Test2 == true then
-		ExecutorSupport["getconnections"] = true
-	end
 end
 if gethiddenproperty then
 	local Property;
@@ -759,6 +757,9 @@ CheckQueueTeleport();
 CheckHookMetaMethod();
 CheckGetNameCallMethod();
 CheckRequire();
+if GetConnectionsPassed == true then
+	ExecutorSupport["getconnections"] = true
+end
 task.wait();
 if ExecutorSupport['getgenv'] then
 	getgenv().ExecutorSupport = ExecutorSupport;
