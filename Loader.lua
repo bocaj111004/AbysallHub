@@ -21,5 +21,28 @@ getgenv().AbysallHubLoaded = true
 
 task.wait(0.5)
 
+local StarterGui = game:GetService("StarterGui")
+local Bindable = Instance.new("BindableFunction")
+
+function Bindable.OnInvoke(Response)
+	if Response == "Copy Invite" then
+		task.wait(0.5)
+		StarterGui:SetCore("SendNotification", {
+			Title = "Invite Copied!",
+			Text = "The invite has been copied to your clipboard.",
+			Duration = 5,
+		})
+		toclipboard("https://discord.gg/YbvBF8WbfC")
+	end
+end
+
+StarterGui:SetCore("SendNotification", {
+	Title = "Notice",
+	Text = "This script is currently being rewritten.\nWould you like to join our discord server for updates?",
+	Duration = math.huge,
+	Callback = Bindable,
+	Button1 = "Copy Invite",
+	Button2 = "Dismiss"
+})
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/Places/" .. CurrentPlace .. ".lua"))()
