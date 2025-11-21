@@ -37,7 +37,13 @@ function Bindable.OnInvoke(Response)
 end
 
 StarterGui:SetCore("SendNotification", {
-	Title = "This script is being rewritten.",
+			Title = "Notice",
+			Text = "This script is currently being rewritten.",
+			Duration = 5,
+})
+task.wait(3)
+StarterGui:SetCore("SendNotification", {
+	Title = "Notice",
 	Text = "Would you like to join our discord server for updates?",
 	Duration = math.huge,
 	Callback = Bindable,
