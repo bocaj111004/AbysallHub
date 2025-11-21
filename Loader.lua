@@ -36,6 +36,8 @@ function Bindable.OnInvoke(Response)
 	end
 end
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/Places/" .. CurrentPlace .. ".lua"))()
+
 StarterGui:SetCore("SendNotification", {
 			Title = "Notice",
 			Text = "This script is currently being rewritten.",
@@ -50,5 +52,3 @@ StarterGui:SetCore("SendNotification", {
 	Button1 = "Copy Invite",
 	Button2 = "Dismiss"
 })
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/AbysallHub/refs/heads/main/Places/" .. CurrentPlace .. ".lua"))()
