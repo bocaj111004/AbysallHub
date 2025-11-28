@@ -356,13 +356,13 @@ if isnetworkowner then
 			if (isnetworkowner(TestPart4) == true) then
 				Test3 = true;
 			end
-				TestPart4:Destroy()
+			TestPart4:Destroy()
 		end);
 		print(Error3)
 		if (Success3 and (Test1 == true) and (Test2 == true) and (Test3 == true)) then
 			ExecutorSupport['isnetworkowner'] = true;
 		end
-		
+
 	end
 end
 if request then
@@ -375,7 +375,7 @@ if request then
 		if type(response) == "table" then
 			if type(response.Body) == "string" then
 				if response.StatusCode == 200 and string.find(response.Body, "replicatesignal") then
-						Test = true
+					Test = true
 				end
 			end
 		end
@@ -528,9 +528,9 @@ if getconnections then
 			Connection:Enable()
 		end
 		TestConnection:Disconnect()
-			TestPart:Destroy()
+		TestPart:Destroy()
 	end);
-	
+
 end
 if gethiddenproperty then
 	local Property1;
@@ -593,20 +593,21 @@ if readfile then
 end
 if loadfile and ExecutorSupport["writefile"] then
 	local Success, Error = pcall(function()
-		writefile("ABYSALL_TEST_FILE_3", "game:GetService('CoreGui').Name = 'ABYSALL_LOADFILE_TEST'")
+		writefile("ABYSALL_TEST_FILE_3", "game:GetService('Stats').Name = 'ABYSALL_LOADFILE_TEST'")
 		local Chunk = loadfile("ABYSALL_TEST_FILE_3")
 		Chunk()
 	end);
-	if (Success and (game:GetService("CoreGui").Name == "ABYSALL_LOADFILE_TEST")) then
+	if (Success and (game:GetService("Stats").Name == "ABYSALL_LOADFILE_TEST")) then
 		ExecutorSupport['loadfile'] = true;
-		game:GetService("CoreGui").Name = "CoreGui"
+		game:GetService("Stats").Name = "Stats"
 	end
 end
 if listfiles then
+	local filelist
 	local Success, Error = pcall(function()
-		listfiles("");
+		filelist = listfiles("");
 	end);
-	if (Success and (typeof(listfiles("")) == "table") and (#listfiles("") > 0)) then
+	if (filelist and Success and typeof(filelist) == "table") then
 		ExecutorSupport['listfiles'] = true;
 	end
 end
@@ -661,7 +662,7 @@ if (delfile and ExecutorSupport['readfile']) then
 	end);
 	if Success1 then
 		local Success2, Error2 = pcall(function()
-			readfile("ABYSALL_TEST_FILE");
+			readfile("ABYSALL_TEST_FILE");	
 		end);
 		if (Success1 and not Success2) then
 			ExecutorSupport['delfile'] = true;
